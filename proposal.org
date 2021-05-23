@@ -1,0 +1,27 @@
+#+TITLE: Computer Graphics Proposal
+#+OPTIONS: toc:nil
+#+LATEX_HEADER: \usepackage[top=0in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
+
+* What?
+In this project I aim to animate a functional 3D chess board using various computer graphics techniques.
+
+I will be using python and opengl to produce and animate a functional chess board capable of playing a game or stepping through any game provided. To provide the chess functionality I will use the ~python-chess~ library to handle the complex move validation.
+
+I will be writing the slide and capture animations, and constructing the models using blender.
+
+I plan to add the following features
+ - Board
+ - Piece models
+ - Piece animations
+ - UI to play a game from a SAN string, reset, and see move history
+ - Click and drag pieces to new positions
+ - Highlight possible move lines.
+ - Use an engine to evaluate board states - Maybe
+ - CPU player - Maybe
+* Why?
+The purpose of this project is to gain a further understanding of the structure and process of creating a computer graphics program as well as efficient techniques and methods while in the process of creating a chess program.
+* How?
+I will use blender to create the piece models so that they can be visually appealing and unique.
+- ~PyOpenGl~ for animations and rendering.
+- ~python-chess~ for the chess specifics such as move validation and interfacing with engines.
+#  LocalWords:  ELO

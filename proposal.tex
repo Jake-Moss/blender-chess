@@ -1,0 +1,64 @@
+% Created 2021-04-19 Mon 12:49
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[top=0in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
+
+\usepackage[main,include]{embedall}
+\IfFileExists{./\jobname.org}{\embedfile[desc=The original file]{\jobname.org}}{}
+\author{Jake Moss}
+\date{\today}
+\title{Computer Graphics Proposal}
+\hypersetup{
+ pdfauthor={Jake Moss},
+ pdftitle={Computer Graphics Proposal},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 28.0.50 (Org mode 9.5)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section{What?}
+\label{sec:orgd154424}
+In this project I aim to animate a functional 3D chess board using various computer graphics techniques.
+
+I will be using python and opengl to produce and animate a functional chess board capable of playing a game or stepping through any game provided. To provide the chess functionality I will use the \texttt{python-chess} library to handle the complex move validation.
+
+I will be writing the slide and capture animations, and constructing the models using blender.
+
+I plan to add the following features
+\begin{itemize}
+\item Board
+\item Piece models
+\item Piece animations
+\item UI to play a game from a SAN string, reset, and see move history
+\item Click and drag pieces to new positions
+\item Highlight possible move lines.
+\item Use an engine to evaluate board states - Maybe
+\item CPU player - Maybe
+\end{itemize}
+\section{Why?}
+\label{sec:org7c371ae}
+The purpose of this project is to gain a further understanding of the structure and process of creating a computer graphics program as well as efficient techniques and methods while in the process of creating a chess program.
+\section{How?}
+\label{sec:org1776a0e}
+I will use blender to create the piece models so that they can be visually appealing and unique.
+\begin{itemize}
+\item \texttt{PyOpenGl} for animations and rendering.
+\item \texttt{python-chess} for the chess specifics such as move validation and interfacing with engines.
+\end{itemize}
+\end{document}

@@ -1,0 +1,10 @@
+#+TITLE: Notes
+#+attr_org: width 200
+
+* Modelling
+** Pieces
+[[https://pixabay.com/illustrations/chess-chess-pieces-chess-piece-316887/][Chess piece reference image]]
+Licence allows for free usage [[https://pixabay.com/illustrations/chess-chess-pieces-chess-piece-316887/][here]]
+
+#+attr_org: :width 400
+[[file:Images/A taste of what is to come.png]]
