@@ -8,3 +8,11 @@ Licence allows for free usage [[https://pixabay.com/illustrations/chess-chess-pi
 
 #+attr_org: :width 400
 [[file:Images/A taste of what is to come.png]]
+
+
+* Lighting
+** Cannot get disco ball to bound enough light
+Not sure what im doing wrong
+
+
+[[https://blender.stackexchange.com/questions/157418/why-dont-i-see-light-reflected-off-a-mirror-in-cycles][I think this is why]]
