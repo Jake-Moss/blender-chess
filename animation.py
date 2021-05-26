@@ -59,6 +59,17 @@ class CustomPiece():
         self.keyframe_insert(data_path="location", index=-1) # TODO Move this somewhere else
         return self
 
+    def hide(self):
+        self._blender_obj.keyframe_insert(data_path="hide_render", frame=FRAME_COUNT)
+        self._blender_obj.hide_render = True
+        self._blender_obj.keyframe_insert(data_path="hide_render", frame=FRAME_COUNT+1)
+
+    def show_now(self):
+        self._blender_obj.hide_render = True
+        self._blender_obj.keyframe_insert(data_path="hide_render", frame=FRAME_COUNT)
+        self._blender_obj.hide_render = False
+        self._blender_obj.keyframe_insert(data_path="hide_render", frame=FRAME_COUNT+1)
+
     def keyframe_insert(self, *args, **kwargs):
         self._blender_obj.keyframe_insert(*args, **kwargs)
 
@@ -92,15 +103,20 @@ def make_move(board: chess.Board, move: chess.Move, array: List[Optional[CustomP
             else: # its a capture,
                 captured_piece = array[locTo].die() # TODO, do something with this
 
-    # if move.promotion is not None:
-    #     # unlink somehow
-    #     pieceType = move.promotion
-    #     array[locTo] = CustomPiece(chess.Piece(pieceType, board.turn),\
-    #                                SOURCE_PIECES[chess.piece_symbol(pieceType)],\
-    #                                array, locTo)
+    if move.promotion is not None:
+        array[locFrom].move(locTo) # NOTE, piece moves always
+        array[locTo].keyframe_insert(data_path="location", index=-1)
+        array[locTo].hide()
+        # unlink somehow
+        pieceType = move.promotion
+        array[locTo] = CustomPiece(chess.Piece(pieceType, board.turn),\
+                                   SOURCE_PIECES[chess.piece_symbol(pieceType)],\
+                                   array, locTo)
+        array[locTo].show_now()
 
-    array[locFrom].move(locTo) # NOTE, piece moves always
 
+    else:
+        array[locFrom].move(locTo) # NOTE, piece moves always
 
 def main(filename) -> Optional[chess.pgn.Game]:
     with open(filename) as pgn:
@@ -121,11 +137,12 @@ def main(filename) -> Optional[chess.pgn.Game]:
                 array[position] = CustomPiece(piece, SOURCE_PIECES[piece.symbol().lower()]\
                                               , array, position)
 
-        number_of_frame = 0
+        global FRAME_COUNT
+        FRAME_COUNT = 0
         keyframes(array) # intial pos
-        number_of_frame += 10
+        FRAME_COUNT += 10
         for move in game.mainline_moves():
-            scene.frame_set(number_of_frame)
+            scene.frame_set(FRAME_COUNT)
 
             make_move(board, move, array)
 
@@ -133,7 +150,7 @@ def main(filename) -> Optional[chess.pgn.Game]:
             keyframes(array) # update blender
             board.push(move) # update python-chess
 
-            number_of_frame += 10
+            FRAME_COUNT += 10
         return game
 
 
