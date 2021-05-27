@@ -137,6 +137,8 @@ def main(filename) -> Optional[chess.pgn.Game]:
                 array[position] = CustomPiece(piece, SOURCE_PIECES[piece.symbol().lower()]\
                                               , array, position)
 
+        camera_parent = bpy.data.collections["Collection"].objects['Camera parent']
+
         global FRAME_COUNT
         FRAME_COUNT = 0
         keyframes(array) # intial pos
@@ -148,9 +150,15 @@ def main(filename) -> Optional[chess.pgn.Game]:
 
 
             keyframes(array) # update blender
+
+            camera_parent.rotation_euler[2] += radians(2) #XYZ
+            camera_parent.keyframe_insert(data_path="rotation_euler", index=-1)
+
             board.push(move) # update python-chess
 
             FRAME_COUNT += 10
+        bpy.data.scenes[0].frame_start = 1
+        bpy.data.scenes[0].frame_end = board.ply()*10 + 48
         return game
 
 
