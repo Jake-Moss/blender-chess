@@ -16,3 +16,20 @@ Not sure what im doing wrong
 
 
 [[https://blender.stackexchange.com/questions/157418/why-dont-i-see-light-reflected-off-a-mirror-in-cycles][I think this is why]]
+
+
+
+
+* Check list
+- [ ] Direct lighting
+- [ ] Indirect lighting
+  - Works in cyles and luxcore, not in eevee
+  - Disco ball
+  - Could use light probes for eevee
+- [ ] Path tracing settings
+- [ ] Bi-directional path tracing
+  - Only in luxcore, very slow, cpu only
+- [ ] Noise reduction
+- [ ] Modelling
+    - Done using reference image and screw modifier
+- [ ]

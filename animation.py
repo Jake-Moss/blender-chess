@@ -24,10 +24,11 @@ class CustomPiece():
         self._colour = pieceType.color         # bool
         self._blender_obj = blender_obj.copy()
         self._array = array                    # reference to array containing self
+        self._inital_loc = loc
         self._loc = loc                        # int (1d array index)
 
         x, y = square_to_world_space(self._loc)
-        self._blender_obj.location = Vector((x, y, 0.1))
+        self._blender_obj.location = Vector((x, y, 0.3))
 
         # set material based on colour
         if self._colour:
@@ -42,7 +43,7 @@ class CustomPiece():
         # add object to collection so its visable
         bpy.data.collections[['Black', 'White'][self._colour]].objects.link(self._blender_obj)
 
-    def move(self, new_loc: int, zTo: float = 0.1):
+    def move(self, new_loc: int, zTo: float = 0.3):
         xTo, yTo = square_to_world_space(new_loc)
         self._blender_obj.location = Vector((xTo, yTo, zTo))
         print("Moved to ", self._blender_obj.location)
@@ -53,13 +54,29 @@ class CustomPiece():
         self._loc = new_loc
 
     def die(self) -> CustomPiece:
-        # TODO some animation here
-        self.move(self._loc, zTo = 30)
         self._array[self._loc] = None
-        self.keyframe_insert(data_path="location", index=-1) # TODO Move this somewhere else
+        # TODO some animation here
+        self.keyframe_insert(data_path="location", frame=FRAME_COUNT-6)
+
+        xTo, yTo = square_to_world_space(self._loc)
+        self._blender_obj.location = Vector((xTo, yTo, 2.1))
+        self.keyframe_insert(data_path="location", frame=FRAME_COUNT+3)
+
+        if self._colour:
+            self._inital_loc += -16
+        else:
+            self._inital_loc += 16
+        xTo, yTo = square_to_world_space(self._inital_loc)
+        self._blender_obj.location = Vector((xTo, yTo, 2.1))
+        self.keyframe_insert(data_path="location", frame=FRAME_COUNT+21)
+
+        xTo, yTo = square_to_world_space(self._inital_loc)
+        self._blender_obj.location = Vector((xTo, yTo, 0.1))
+        self.keyframe_insert(data_path="location", frame=FRAME_COUNT+29)
+
         return self
 
-    def hide(self):
+    def hide_now(self):
         self._blender_obj.keyframe_insert(data_path="hide_render", frame=FRAME_COUNT)
         self._blender_obj.hide_render = True
         self._blender_obj.keyframe_insert(data_path="hide_render", frame=FRAME_COUNT+1)
@@ -106,7 +123,7 @@ def make_move(board: chess.Board, move: chess.Move, array: List[Optional[CustomP
     if move.promotion is not None:
         array[locFrom].move(locTo) # NOTE, piece moves always
         array[locTo].keyframe_insert(data_path="location", index=-1)
-        array[locTo].hide()
+        array[locTo].hide_now()
         # unlink somehow
         pieceType = move.promotion
         array[locTo] = CustomPiece(chess.Piece(pieceType, board.turn),\
@@ -132,8 +149,7 @@ def main(filename) -> Optional[chess.pgn.Game]:
 
         array = [None for _ in range(64)]
         for position in range(64):
-            piece = board.piece_at(position)
-            if piece is not None:
+            if (piece := board.piece_at(position)) is not None:
                 array[position] = CustomPiece(piece, SOURCE_PIECES[piece.symbol().lower()]\
                                               , array, position)
 
@@ -157,8 +173,29 @@ def main(filename) -> Optional[chess.pgn.Game]:
             board.push(move) # update python-chess
 
             FRAME_COUNT += 10
+            keyframes(array) # update blender
+            FRAME_COUNT += 3
+
+        confetti = bpy.data.collections["Board"].objects['Confetti source']
+        print(board.outcome())
+        if board.outcome() is not None:
+            winner = board.outcome().winner
+            king_square = board.king(winner)
+            xTo, yTo = square_to_world_space(king_square)
+            confetti.location = Vector((xTo, yTo, 3))
+            bpy.data.particles["Confetti"].frame_start = FRAME_COUNT
+            bpy.data.particles["Confetti"].frame_end = FRAME_COUNT + 12
+
+        print(FRAME_COUNT)
+        for _ in range(5):
+            scene.frame_set(FRAME_COUNT)
+            camera_parent.rotation_euler[2] += radians(2) #XYZ
+            camera_parent.keyframe_insert(data_path="rotation_euler", index=-1)
+
+            FRAME_COUNT += 13
+
         bpy.data.scenes[0].frame_start = 1
-        bpy.data.scenes[0].frame_end = board.ply()*10 + 48
+        bpy.data.scenes[0].frame_end = FRAME_COUNT - 13
         return game
 
 
@@ -166,8 +203,11 @@ def main(filename) -> Optional[chess.pgn.Game]:
 
 
 if __name__ == "__main__":
-    main("/home/jake/Uni/2nd year/COSC3000/ComputerGraphics/testing.pgn")
-
+    # main("/home/jake/Uni/2nd year/COSC3000/ComputerGraphics/pgn/carlsen_nakamura_2021.pgn")
+    # main("/home/jake/Uni/2nd year/COSC3000/ComputerGraphics/pgn/testing.pgn")
+    # main("/home/jake/Uni/2nd year/COSC3000/ComputerGraphics/pgn/Garry Kasparov_vs_Veselin Topalov_1999.pgn")
+    # main("/home/jake/Uni/2nd year/COSC3000/ComputerGraphics/pgn/kramnik_kasparov_2001.pgn")
+    main("/home/jake/Uni/2nd year/COSC3000/ComputerGraphics/pgn/grischuk_ponomariov_2000.pgn")
 
 
 """                     Flow chart
