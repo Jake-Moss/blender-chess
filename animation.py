@@ -206,8 +206,8 @@ if __name__ == "__main__":
     # main("/home/jake/Uni/2nd year/COSC3000/ComputerGraphics/pgn/carlsen_nakamura_2021.pgn")
     # main("/home/jake/Uni/2nd year/COSC3000/ComputerGraphics/pgn/testing.pgn")
     # main("/home/jake/Uni/2nd year/COSC3000/ComputerGraphics/pgn/Garry Kasparov_vs_Veselin Topalov_1999.pgn")
-    # main("/home/jake/Uni/2nd year/COSC3000/ComputerGraphics/pgn/kramnik_kasparov_2001.pgn")
-    main("/home/jake/Uni/2nd year/COSC3000/ComputerGraphics/pgn/grischuk_ponomariov_2000.pgn")
+    main("/home/jake/Uni/2nd year/COSC3000/ComputerGraphics/pgn/kramnik_kasparov_2001.pgn")
+    # main("/home/jake/Uni/2nd year/COSC3000/ComputerGraphics/pgn/grischuk_ponomariov_2000.pgn")
 
 
 """                     Flow chart
