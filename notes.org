@@ -18,6 +18,8 @@ Not sure what im doing wrong
 [[https://blender.stackexchange.com/questions/157418/why-dont-i-see-light-reflected-off-a-mirror-in-cycles][I think this is why]]
 
 
+* Game used in source
+[[https://www.chessgames.com/perl/chessgame?gid=1210753]]
 
 
 * Check list

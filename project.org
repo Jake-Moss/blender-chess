@@ -1,0 +1,140 @@
+#+TITLE: Chess game animation in blender
+#+author: Jake Moss - s46409665
+#+latex_header: \usepackage[top=1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
+#+LATEX_HEADER: \usepackage{parskip}
+#+latex_header: \usepackage[style=ieee,hyperref=true,backref=true,url=true,backend=biber,natbib=true]{biblatex}
+#+latex_header: \addbibresource{ref.bib}
+#+latex_header: \usepackage{chessboard}
+#+latex_header: \ExplSyntaxOn %requires texlive 2020, in older system load expl3
+#+latex_header: \cs_new:Npn \getfieldnumber #1
+#+latex_header:  {
+#+latex_header:   \fp_eval:n { (\tl_tail:V #1 -1)*8 + \exp_args:Ne\int_from_alph:n{\tl_head:V #1} -1}
+#+latex_header:  }
+#+latex_header: \ExplSyntaxOff
+#+options: tasks:nil
+
+\newpage
+
+* Introduction
+** Project aims
+* The idea
+* Implementation
+** Blender side
+*** Piece modelling
+Pieces were modelled after the reference image below Figure ref:piece-reference. From this image the pieces where traced using the ~Add Vertex~ tool, from the [[https://docs.blender.org/manual/en/2.92/addons/add_mesh/mesh_extra_objects.html][Add Mess Extra Objects]] add-on. To transform this line of vertices to a solid object  a ~Screw~ modifier was applied.
+#+caption: Reference image, Licensed under [[https://pixabay.com/service/license/][Pixabay License]]
+#+name: piece-reference
+#+attr_org: :width 200
+#+attr_latex: :width 0.5\textwidth :center t
+[[file:ref/bee5aa3d08a30da4ca1005cbd0fe10b54a03bb49.jpg]]
+
+#+begin_center
+#+attr_org: :width 200
+#+attr_latex: :height 150pt  :center nil
+[[file:Images/modelling piece inprogress.png]]
+#+attr_org: :width 200
+#+attr_latex: :height 150pt :center nil
+[[file:Images/screw settings.png]]
+#+attr_org: :width 200
+#+attr_latex: :height 150pt :center nil
+[[file:Images/pawn model.png]]
+#+end_center
+The notable changes from the default settings is the lowering of the steps from
+\(16 \to 10\) and disabling ~Smooth Shading~. This was a stylistic choice as it
+was believed that the low polygon look would better demonstration reflections and
+the planned indirect lighting (see [[*Disco ball][Lighting - Disco Ball]]).
+
+To model the knight, 3 separate reference images where used. The base was
+constructed in a similar manner to the other pieces. The head was made manually.
+#+begin_center
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:ref/knight front.jpg]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:ref/knight right.jpg]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:ref/knight back.jpg]]
+#+end_center
+Additionally ico-spheres where added  to piece some pieces additional detail.
+The finally piece models appear as below.
+#+attr_org: :width 200
+#+attr_latex: :width 0.5\textwidth
+[[file:Images/Pieces.png]]
+*** Board
+**** Chess board
+The chess board model is a simple
+**** Marble exterior
+*** Textures and shading
+# Need specific shaders in here
+*** Particle effects
+**** Explosions
+**** Confetti
+*** Lighting
+**** Direct
+**** Indirect
+**** Disco ball
+*** Render engine
+**** Eevee
+**** Cycles
+***** Thank you to Jack
+Due to significant hardware limitations for ray-tracing (~GTX 760, i5-4670~), a
+favour was called in with a good friend, Jack kindly lent their ~RTX 2070~  for a
+cycles render. See
+**** Luxcore
+** Python side
+*** Processing games
+*** Unique pairing problem
+*** The solution
+*** Array index to world space
+#+begin_export latex
+\setchessboard{color=black,clearboard,showmover=false}
+\chessboard[
+pgfstyle=
+{[base,at={\pgfpoint{0pt}{-0.3ex}}]text},
+text= \fontsize{1.2ex}{1.2ex}\bfseries
+\sffamily\getfieldnumber\currentwq,
+markboard]
+#+end_export
+**** Abuse of this functionality
+*** Special moves
+**** Promotion
+**** En passant
+**** Castling
+*** Animation
+**** Key frames
+***** Timing
+**** Interpolation
+** Reproducibility
+This project was created used
+- Blender ~2.92~
+  [[https://www.blender.org/]]
+- Python ~3.9.5~ [fn:2]
+  [[https://www.python.org/]]
+- python-chess ~1.5.0~ [fn:1]
+  [[https://github.com/niklasf/python-chess]]
+*** Python environment
+Blender is distributed with its own python installation for consistency,
+however this means that installed python modules are not present
+cite:blender-python-env. To mitigate this the ~--target~ flag for ~pip install~
+can be used to install directly to the blender python environment
+cite:pip-install-man.
+#+begin_src bash :exports code
+pip install -t ~/.config/blender/2.92/scripts/modules chess
+#+end_src
+
+* Results
+* Evaluation
+
+\newpage
+* Appendix
+#  LocalWords:  Eevee Luxcore shaders
+\newpage
+\printbibliography
+* Footnotes
+[fn:2] Blender comes bundled with this version. If the system python is used
+instead ensure it is above ~3.7~ for the ~__future__~ module.
+
+[fn:1] This project requires the ~Outcome~ class released in ~1.5.0~
+
