@@ -1,0 +1,12 @@
+\contentsline {section}{\numberline {1}Testing}{1}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Particle effects}{1}{subsection.1.1}%
+\contentsline {subsubsection}{\numberline {1.1.1}Explosions}{1}{subsubsection.1.1.1}%
+\contentsline {subsubsection}{\numberline {1.1.2}Confetti}{1}{subsubsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.2}Lighting}{1}{subsection.1.2}%
+\contentsline {subsubsection}{\numberline {1.2.1}Direct}{1}{subsubsection.1.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.2}Indirect}{1}{subsubsection.1.2.2}%
+\contentsline {subsubsection}{\numberline {1.2.3}Disco ball}{1}{subsubsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.3}Render engine}{1}{subsection.1.3}%
+\contentsline {subsubsection}{\numberline {1.3.1}Eevee}{1}{subsubsection.1.3.1}%
+\contentsline {subsubsection}{\numberline {1.3.2}Cycles}{1}{subsubsection.1.3.2}%
+\contentsline {paragraph}{Thank you to Jack}{1}{section*.2}%

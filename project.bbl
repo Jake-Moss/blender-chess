@@ -19,6 +19,200 @@
 
 \refsection{0}
   \datalist[entry]{none/global//global/global}
+    \entry{node-vs-layer}{article}{}
+      \name{author}{1}{}{%
+        {{hash=aedd42f6883e42150221775d9885cb62}{%
+           family={Hedin},
+           familyi={H\bibinitperiod},
+           given={Henric},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{aedd42f6883e42150221775d9885cb62}
+      \strng{fullhash}{aedd42f6883e42150221775d9885cb62}
+      \strng{bibnamehash}{aedd42f6883e42150221775d9885cb62}
+      \strng{authorbibnamehash}{aedd42f6883e42150221775d9885cb62}
+      \strng{authornamehash}{aedd42f6883e42150221775d9885cb62}
+      \strng{authorfullhash}{aedd42f6883e42150221775d9885cb62}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Department of Industrial Development, IT and Land Management}
+      \field{month}{06}
+      \field{title}{Comparison of Node Based Versus Layer Based Compositing}
+      \field{year}{2010}
+      \verb{urlraw}
+      \verb https://www.diva-portal.org/smash/get/diva2:327273/FULLTEXT02.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.diva-portal.org/smash/get/diva2:327273/FULLTEXT02.pdf
+      \endverb
+    \endentry
+    \entry{ggx-paper}{article}{}
+      \name{author}{4}{}{%
+        {{hash=28695a18f6ec34dbc51988976d04542d}{%
+           family={Walter},
+           familyi={W\bibinitperiod},
+           given={Bruce},
+           giveni={B\bibinitperiod}}}%
+        {{hash=da1b1092b67b2a46f4e205e49696d294}{%
+           family={R.Marschner},
+           familyi={R\bibinitperiod},
+           given={Stephen},
+           giveni={S\bibinitperiod}}}%
+        {{hash=2f92cda6941111214dbd72624b3e4f57}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Hongsong},
+           giveni={H\bibinitperiod}}}%
+        {{hash=866874adc22cceb1a87ec696068f7ec8}{%
+           family={E.Torrance},
+           familyi={E\bibinitperiod},
+           given={Kenneth},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{306138fce61a1534eefde2ffc4d4533a}
+      \strng{fullhash}{9e7a3f7b6f59f5b82aa077e438b0c5ac}
+      \strng{bibnamehash}{9e7a3f7b6f59f5b82aa077e438b0c5ac}
+      \strng{authorbibnamehash}{9e7a3f7b6f59f5b82aa077e438b0c5ac}
+      \strng{authornamehash}{306138fce61a1534eefde2ffc4d4533a}
+      \strng{authorfullhash}{9e7a3f7b6f59f5b82aa077e438b0c5ac}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Microfacet Models for Refraction through Rough Surfaces}
+      \field{year}{2007}
+      \verb{urlraw}
+      \verb https://www.cs.cornell.edu/~srm/publications/EGSR07-btdf.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.cs.cornell.edu/~srm/publications/EGSR07-btdf.pdf
+      \endverb
+    \endentry
+    \entry{principled-bsdf-docs}{online}{}
+      \name{author}{1}{}{%
+        {{hash=44275c392a37e9fa9de37082ab548a59}{%
+           family={Foundation},
+           familyi={F\bibinitperiod},
+           given={Blender},
+           giveni={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{44275c392a37e9fa9de37082ab548a59}
+      \strng{fullhash}{44275c392a37e9fa9de37082ab548a59}
+      \strng{bibnamehash}{44275c392a37e9fa9de37082ab548a59}
+      \strng{authorbibnamehash}{44275c392a37e9fa9de37082ab548a59}
+      \strng{authornamehash}{44275c392a37e9fa9de37082ab548a59}
+      \strng{authorfullhash}{44275c392a37e9fa9de37082ab548a59}
+      \field{extraname}{1}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{day}{25}
+      \field{month}{2}
+      \field{title}{Principled BSDF - Blender documentation}
+      \field{year}{2020}
+      \field{dateera}{ce}
+      \verb{urlraw}
+      \verb https://docs.blender.org/manual/en/latest/render/shader_nodes/shader/principled.html
+      \endverb
+      \verb{url}
+      \verb https://docs.blender.org/manual/en/latest/render/shader_nodes/shader/principled.html
+      \endverb
+    \endentry
+    \entry{ms-ggx-paper}{article}{}
+      \name{author}{4}{}{%
+        {{hash=7cd487dc85bee7c114f0c253a889a365}{%
+           family={Heitz},
+           familyi={H\bibinitperiod},
+           given={Eric},
+           giveni={E\bibinitperiod}}}%
+        {{hash=9704acb4cd311c1d51afcb6bfd076bef}{%
+           family={Hanika},
+           familyi={H\bibinitperiod},
+           given={Johannes},
+           giveni={J\bibinitperiod}}}%
+        {{hash=889ebd4ab68272c28d753ac06666b5b0}{%
+           family={d’Eon},
+           familyi={d\bibinitperiod},
+           given={Eugene},
+           giveni={E\bibinitperiod}}}%
+        {{hash=8c632dc76a15ce8f8ef2975a1a520a0a}{%
+           family={Dachsbacher},
+           familyi={D\bibinitperiod},
+           given={Carsten},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{a2eedd1bbeb1ce9632431bb39c0c0b40}
+      \strng{fullhash}{949109c823a9674ada6a048a18208502}
+      \strng{bibnamehash}{949109c823a9674ada6a048a18208502}
+      \strng{authorbibnamehash}{949109c823a9674ada6a048a18208502}
+      \strng{authornamehash}{a2eedd1bbeb1ce9632431bb39c0c0b40}
+      \strng{authorfullhash}{949109c823a9674ada6a048a18208502}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Multiple-Scattering Microfacet BSDFs with the Smith Model}
+      \field{year}{2016}
+      \verb{urlraw}
+      \verb https://drive.google.com/file/d/0BzvWIdpUpRx_cFVlUkFhWXdleEU/view
+      \endverb
+      \verb{url}
+      \verb https://drive.google.com/file/d/0BzvWIdpUpRx_cFVlUkFhWXdleEU/view
+      \endverb
+    \endentry
+    \entry{blender-issue-tracker}{online}{}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labeltitlesource}{title}
+      \field{day}{18}
+      \field{month}{5}
+      \field{title}{Cycles: Add multi-scattering, energy-conserving GGX as an option to the Glossy, Anisotropic and Glass BSDFs}
+      \field{year}{2016}
+      \field{dateera}{ce}
+      \verb{urlraw}
+      \verb https://developer.blender.org/D2002
+      \endverb
+      \verb{url}
+      \verb https://developer.blender.org/D2002
+      \endverb
+    \endentry
+    \entry{Christensen-Burley}{article}{}
+      \name{author}{2}{}{%
+        {{hash=61a6acded90f1955a6bc53a22e9aa662}{%
+           family={Christensen},
+           familyi={C\bibinitperiod},
+           given={Per\bibnamedelima H.},
+           giveni={P\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=3f576146d9dcb3e5bb5d532085c7f051}{%
+           family={Burley},
+           familyi={B\bibinitperiod},
+           given={Brent},
+           giveni={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{3fe06dd149f4b1da5530a93709fbb016}
+      \strng{fullhash}{3fe06dd149f4b1da5530a93709fbb016}
+      \strng{bibnamehash}{3fe06dd149f4b1da5530a93709fbb016}
+      \strng{authorbibnamehash}{3fe06dd149f4b1da5530a93709fbb016}
+      \strng{authornamehash}{3fe06dd149f4b1da5530a93709fbb016}
+      \strng{authorfullhash}{3fe06dd149f4b1da5530a93709fbb016}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Pixar Technical Memo}
+      \field{month}{06}
+      \field{title}{Approximate Reflectance Profiles for Efficient Subsurface Scattering}
+      \field{year}{2015}
+      \verb{urlraw}
+      \verb https://graphics.pixar.com/library/ApproxBSSRDF/
+      \endverb
+      \verb{url}
+      \verb https://graphics.pixar.com/library/ApproxBSSRDF/
+      \endverb
+    \endentry
     \entry{blender-python-env}{online}{}
       \name{author}{1}{}{%
         {{hash=44275c392a37e9fa9de37082ab548a59}{%
@@ -33,19 +227,23 @@
       \strng{authorbibnamehash}{44275c392a37e9fa9de37082ab548a59}
       \strng{authornamehash}{44275c392a37e9fa9de37082ab548a59}
       \strng{authorfullhash}{44275c392a37e9fa9de37082ab548a59}
+      \field{extraname}{2}
       \field{sortinit}{1}
       \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Tips and Tricks - Blender Python API}
+      \field{urlday}{30}
+      \field{urlmonth}{5}
+      \field{urlyear}{2021}
       \field{year}{2021}
+      \field{urldateera}{ce}
       \verb{urlraw}
       \verb https://docs.blender.org/api/current/info_tips_and_tricks.html#bundled-python-extensions
       \endverb
       \verb{url}
       \verb https://docs.blender.org/api/current/info_tips_and_tricks.html#bundled-python-extensions
       \endverb
-      \warn{\item Entry 'blender-python-env' (ref.bib): Invalid format 'Online; accessed 30 May 2021' of date field 'urldate' - ignoring}
     \endentry
     \entry{pip-install-man}{manual}{}
       \name{author}{1}{}{%
@@ -61,13 +259,16 @@
       \strng{authorbibnamehash}{850b1b5093b12d15aef216974f99dedd}
       \strng{authornamehash}{850b1b5093b12d15aef216974f99dedd}
       \strng{authorfullhash}{850b1b5093b12d15aef216974f99dedd}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
+      \field{day}{26}
       \field{edition}{20.3}
+      \field{month}{1}
       \field{title}{pip-install(1) Linux Man Page}
-      \warn{\item Entry 'pip-install-man' (ref.bib): Invalid format '26-01-2021' of date field 'date' - ignoring}
+      \field{year}{2021}
+      \field{dateera}{ce}
     \endentry
   \enddatalist
 \endrefsection

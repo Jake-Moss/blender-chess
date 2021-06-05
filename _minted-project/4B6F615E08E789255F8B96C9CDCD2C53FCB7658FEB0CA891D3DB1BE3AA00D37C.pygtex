@@ -1,0 +1,60 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{class} \PYG{n+nc}{CustomPiece}\PYG{p}{():}
+    \PYG{k}{def} \PYG{n+nf+fm}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{pieceType}\PYG{p}{:} \PYG{n}{chess}\PYG{o}{.}\PYG{n}{Piece}\PYG{p}{,} \PYG{n}{blender\PYGZus{}obj}\PYG{p}{:} \PYG{n}{bpy}\PYG{o}{.}\PYG{n}{types}\PYG{o}{.}\PYG{n}{Object}\PYG{p}{,}\PYGZbs{}
+                 \PYG{n}{array}\PYG{p}{:} \PYG{n}{List}\PYG{p}{[}\PYG{n}{Optional}\PYG{p}{[}\PYG{n}{CustomPiece}\PYG{p}{]],} \PYG{n}{loc}\PYG{p}{:} \PYG{n+nb}{int}\PYG{p}{):}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}pieceType} \PYG{o}{=} \PYG{n}{pieceType}\PYG{o}{.}\PYG{n}{piece\PYGZus{}type} \PYG{c+c1}{\PYGZsh{} int}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}colour} \PYG{o}{=} \PYG{n}{pieceType}\PYG{o}{.}\PYG{n}{color}         \PYG{c+c1}{\PYGZsh{} bool}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}blender\PYGZus{}obj} \PYG{o}{=} \PYG{n}{blender\PYGZus{}obj}\PYG{o}{.}\PYG{n}{copy}\PYG{p}{()}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}array} \PYG{o}{=} \PYG{n}{array}                    \PYG{c+c1}{\PYGZsh{} reference to array containing self}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}inital\PYGZus{}loc} \PYG{o}{=} \PYG{n}{loc}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}loc} \PYG{o}{=} \PYG{n}{loc}                        \PYG{c+c1}{\PYGZsh{} int (1d array index)}
+
+        \PYG{n}{x}\PYG{p}{,} \PYG{n}{y} \PYG{o}{=} \PYG{n}{square\PYGZus{}to\PYGZus{}world\PYGZus{}space}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}loc}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}blender\PYGZus{}obj}\PYG{o}{.}\PYG{n}{location} \PYG{o}{=} \PYG{n}{Vector}\PYG{p}{((}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{l+m+mf}{0.3}\PYG{p}{))}
+
+        \PYG{c+c1}{\PYGZsh{} set material based on colour}
+        \PYG{k}{if} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}colour}\PYG{p}{:}
+            \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}mat} \PYG{o}{=} \PYG{n}{bpy}\PYG{o}{.}\PYG{n}{data}\PYG{o}{.}\PYG{n}{materials}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}White pieces\PYGZdq{}}\PYG{p}{]}
+        \PYG{k}{else}\PYG{p}{:}
+            \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}mat} \PYG{o}{=} \PYG{n}{bpy}\PYG{o}{.}\PYG{n}{data}\PYG{o}{.}\PYG{n}{materials}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}Black pieces\PYGZdq{}}\PYG{p}{]}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}blender\PYGZus{}obj}\PYG{o}{.}\PYG{n}{active\PYGZus{}material} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}mat}
+
+
+        \PYG{k}{if} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}colour} \PYG{o+ow}{and} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}pieceType} \PYG{o}{==} \PYG{n}{chess}\PYG{o}{.}\PYG{n}{KNIGHT}\PYG{p}{:}
+            \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}blender\PYGZus{}obj}\PYG{o}{.}\PYG{n}{rotation\PYGZus{}euler}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]} \PYG{o}{=} \PYG{n}{radians}\PYG{p}{(}\PYG{l+m+mi}{180}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}XYZ}
+        \PYG{c+c1}{\PYGZsh{} add object to collection so its visable}
+        \PYG{n}{bpy}\PYG{o}{.}\PYG{n}{data}\PYG{o}{.}\PYG{n}{collections}\PYG{p}{[[}\PYG{l+s+s1}{\PYGZsq{}Black\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}White\PYGZsq{}}\PYG{p}{][}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}colour}\PYG{p}{]]}\PYG{o}{.}\PYG{n}{objects}\PYG{o}{.}\PYG{n}{link}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}blender\PYGZus{}obj}\PYG{p}{)}
+
+    \PYG{k}{def} \PYG{n+nf}{move}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{new\PYGZus{}loc}\PYG{p}{:} \PYG{n+nb}{int}\PYG{p}{,} \PYG{n}{zTo}\PYG{p}{:} \PYG{n+nb}{float} \PYG{o}{=} \PYG{l+m+mf}{0.3}\PYG{p}{):}
+        \PYG{n}{xTo}\PYG{p}{,} \PYG{n}{yTo} \PYG{o}{=} \PYG{n}{square\PYGZus{}to\PYGZus{}world\PYGZus{}space}\PYG{p}{(}\PYG{n}{new\PYGZus{}loc}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}blender\PYGZus{}obj}\PYG{o}{.}\PYG{n}{location} \PYG{o}{=} \PYG{n}{Vector}\PYG{p}{((}\PYG{n}{xTo}\PYG{p}{,} \PYG{n}{yTo}\PYG{p}{,} \PYG{n}{zTo}\PYG{p}{))}
+        \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Moved to \PYGZdq{}}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}blender\PYGZus{}obj}\PYG{o}{.}\PYG{n}{location}\PYG{p}{)}
+
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}array}\PYG{p}{[}\PYG{n}{new\PYGZus{}loc}\PYG{p}{]} \PYG{o}{=} \PYG{n+nb+bp}{self}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}array}\PYG{p}{[}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}loc}\PYG{p}{]} \PYG{o}{=} \PYG{k+kc}{None}
+
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}loc} \PYG{o}{=} \PYG{n}{new\PYGZus{}loc}
+
+    \PYG{k}{def} \PYG{n+nf}{die}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n}{CustomPiece}\PYG{p}{:}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}array}\PYG{p}{[}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}loc}\PYG{p}{]} \PYG{o}{=} \PYG{k+kc}{None}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{keyframe\PYGZus{}insert}\PYG{p}{(}\PYG{n}{data\PYGZus{}path}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}location\PYGZdq{}}\PYG{p}{,} \PYG{n}{frame}\PYG{o}{=}\PYG{n}{FRAME\PYGZus{}COUNT}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{6}\PYG{p}{)}
+
+        \PYG{n}{xTo}\PYG{p}{,} \PYG{n}{yTo} \PYG{o}{=} \PYG{n}{square\PYGZus{}to\PYGZus{}world\PYGZus{}space}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}loc}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}blender\PYGZus{}obj}\PYG{o}{.}\PYG{n}{location} \PYG{o}{=} \PYG{n}{Vector}\PYG{p}{((}\PYG{n}{xTo}\PYG{p}{,} \PYG{n}{yTo}\PYG{p}{,} \PYG{l+m+mf}{2.1}\PYG{p}{))}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{keyframe\PYGZus{}insert}\PYG{p}{(}\PYG{n}{data\PYGZus{}path}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}location\PYGZdq{}}\PYG{p}{,} \PYG{n}{frame}\PYG{o}{=}\PYG{n}{FRAME\PYGZus{}COUNT}\PYG{o}{+}\PYG{l+m+mi}{3}\PYG{p}{)}
+
+        \PYG{k}{if} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}colour}\PYG{p}{:}
+            \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}inital\PYGZus{}loc} \PYG{o}{+=} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{16}
+        \PYG{k}{else}\PYG{p}{:}
+            \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}inital\PYGZus{}loc} \PYG{o}{+=} \PYG{l+m+mi}{16}
+
+        \PYG{n}{xTo}\PYG{p}{,} \PYG{n}{yTo} \PYG{o}{=} \PYG{n}{square\PYGZus{}to\PYGZus{}world\PYGZus{}space}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}inital\PYGZus{}loc}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}blender\PYGZus{}obj}\PYG{o}{.}\PYG{n}{location} \PYG{o}{=} \PYG{n}{Vector}\PYG{p}{((}\PYG{n}{xTo}\PYG{p}{,} \PYG{n}{yTo}\PYG{p}{,} \PYG{l+m+mf}{2.1}\PYG{p}{))}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{keyframe\PYGZus{}insert}\PYG{p}{(}\PYG{n}{data\PYGZus{}path}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}location\PYGZdq{}}\PYG{p}{,} \PYG{n}{frame}\PYG{o}{=}\PYG{n}{FRAME\PYGZus{}COUNT}\PYG{o}{+}\PYG{l+m+mi}{21}\PYG{p}{)}
+
+        \PYG{n}{xTo}\PYG{p}{,} \PYG{n}{yTo} \PYG{o}{=} \PYG{n}{square\PYGZus{}to\PYGZus{}world\PYGZus{}space}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}inital\PYGZus{}loc}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}blender\PYGZus{}obj}\PYG{o}{.}\PYG{n}{location} \PYG{o}{=} \PYG{n}{Vector}\PYG{p}{((}\PYG{n}{xTo}\PYG{p}{,} \PYG{n}{yTo}\PYG{p}{,} \PYG{l+m+mf}{0.1}\PYG{p}{))}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{keyframe\PYGZus{}insert}\PYG{p}{(}\PYG{n}{data\PYGZus{}path}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}location\PYGZdq{}}\PYG{p}{,} \PYG{n}{frame}\PYG{o}{=}\PYG{n}{FRAME\PYGZus{}COUNT}\PYG{o}{+}\PYG{l+m+mi}{29}\PYG{p}{)}
+
+        \PYG{k}{return} \PYG{n+nb+bp}{self}
+\end{Verbatim}

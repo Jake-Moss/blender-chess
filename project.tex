@@ -1,21 +1,12 @@
-% Created 2021-05-31 Mon 23:37
+% Created 2021-06-05 Sat 00:25
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{graphicx}
-\usepackage{grffile}
-\usepackage{longtable}
-\usepackage{wrapfig}
-\usepackage{rotating}
-\usepackage[normalem]{ulem}
-\usepackage{amsmath}
-\usepackage{textcomp}
-\usepackage{amssymb}
-\usepackage{capt-of}
+\usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage[top=1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
-\usepackage{parskip}
+\usepackage{amsmath}
 \usepackage[style=ieee,hyperref=true,backref=true,url=true,backend=biber,natbib=true]{biblatex}
 \addbibresource{ref.bib}
 \usepackage{chessboard}
@@ -25,33 +16,53 @@
 \fp_eval:n { (\tl_tail:V #1 -1)*8 + \exp_args:Ne\int_from_alph:n{\tl_head:V #1} -1}
 }
 \ExplSyntaxOff
+\usepackage{titlesec}
+\setcounter{secnumdepth}{4}
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
-\usepackage[main,include]{embedall}
-\IfFileExists{./\jobname.org}{\embedfile[desc=The original file]{\jobname.org}}{}
+% features: (embed-files embed-tangled acronym underline par-sep image float-wrap engraved-code-setup engraved-code)
+
+  \usepackage[main,include]{embedall}
+  \IfFileExists{./\jobname.org}{\embedfile[desc=The original file]{\jobname.org}}{}
+  
 
 
+\newcommand{\acr}[1]{\protect\textls*[110]{\scshape #1}}
+\newcommand{\acrs}{\protect\scalebox{.91}[.84]{\hspace{0.15ex}s}}
+\usepackage[normalem]{ulem}
+\setlength{\parindent}{0pt}
 
+\usepackage{graphicx}
+\usepackage{wrapfig}
 
+  \usepackage{fvextra}
+  \fvset{
+    commandchars=\\\{\},
+    highlightcolor=white!95!black!80!blue,
+    breaklines=true,
+    breaksymbol=\color{white!60!black}\tiny\ensuremath{\hookrightarrow}}
+  \renewcommand\theFancyVerbLine{\footnotesize\color{black!40!white}\arabic{FancyVerbLine}}
 
-\usepackage{fvextra}
-\fvset{
-  commandchars=\\\{\},
-  highlightcolor=white!95!black!80!blue,
-  breaklines=true,
-  breaksymbol=\color{white!60!black}\tiny\ensuremath{\hookrightarrow},
-}
-\renewcommand\theFancyVerbLine{\footnotesize\color{black!40!white}\arabic{FancyVerbLine}}
+  \definecolor{codebackground}{HTML}{f7f7f7}
+  \definecolor{codeborder}{HTML}{f0f0f0}
 
-\usepackage[many]{tcolorbox}
-\DeclareTColorBox[]{Code}{}%
-{enhanced,
-  colback=white!97!black,
-  colframe=white!94!black, boxrule=0.5pt,
-  fontupper=\color{EFD}\footnotesize,
-  arc=2.5pt, outer arc=2.5pt,
-  boxsep=2pt, left=2pt, right=2pt, top=1pt, bottom=0.5pt,
-  breakable}
-
+  % TODO have code boxes keep line vertical alignment
+  \usepackage[breakable,xparse]{tcolorbox}
+  \DeclareTColorBox[]{Code}{o}%
+  {colback=codebackground, colframe=codeborder,
+    fontupper=\footnotesize,
+    colupper=EFD,
+    IfNoValueTF={#1}%
+    {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
+      boxrule=0.5pt, left=2pt}%
+    {boxsep=2.5pt, arc=0pt, outer arc=0pt,
+      boxrule=0pt, leftrule=1.5pt, left=0.5pt},
+    right=2pt, top=1pt, bottom=0.5pt,
+    breakable}
+  
 \definecolor{EFD}{HTML}{383a42}
 \newcommand{\EFD}[1]{\textcolor{EFD}{#1}} % default
 \definecolor{EFk}{HTML}{e45649}
@@ -84,6 +95,7 @@
 \newcommand{\EFrc}[1]{\textcolor{EFrc}{\textbf{#1}}} % font-lock-regexp-grouping-construct
 \definecolor{EFrb}{HTML}{4078f2}
 \newcommand{\EFrb}[1]{\textcolor{EFrb}{\textbf{#1}}} % font-lock-regexp-grouping-backslash
+\newcommand{\EFob}[1]{#1} % org-block
 \definecolor{EFhn}{HTML}{da8548}
 \newcommand{\EFhn}[1]{\textcolor{EFhn}{\textbf{#1}}} % highlight-numbers-number
 \definecolor{EFhq}{HTML}{4078f2}
@@ -108,6 +120,7 @@
 \newcommand{\EFrdiix}[1]{\textcolor{EFrdiix}{#1}} % rainbow-delimiters-depth-8-face
 \definecolor{EFrdix}{HTML}{887070}
 \newcommand{\EFrdix}[1]{\textcolor{EFrdix}{#1}} % rainbow-delimiters-depth-9-face
+% end features
 \author{Jake Moss - s46409665}
 \date{\today}
 \title{Chess game animation in blender}
@@ -126,18 +139,162 @@
 \newpage
 
 \section{Introduction}
-\label{sec:orgf6461a5}
+\label{sec:orgdebf429}
 \subsection{Project aims}
-\label{sec:org4c663ca}
-\section{The idea}
-\label{sec:org375cbe3}
-\section{Implementation}
-\label{sec:org5b1f7f0}
-\subsection{Blender side}
-\label{sec:org77210c7}
-\subsubsection{Piece modelling}
-\label{sec:org3ab0387}
-Pieces were modelled after the reference image below Figure \ref{piece-reference}. From this image the pieces where traced using the \texttt{Add Vertex} tool, from the \href{https://docs.blender.org/manual/en/2.92/addons/add\_mesh/mesh\_extra\_objects.html}{Add Mess Extra Objects} add-on. To transform this line of vertices to a solid object  a \texttt{Screw} modifier was applied.
+\label{sec:org3870426}
+This project aims to demonstrate a sufficient knowledge of computer graphics
+techniques and implementations through the creation of a visually appealing
+chess game animation tool. This was accomplished using Blender, and its python
+scripting API.
+
+This project utilises two tools to create the chess animation
+\begin{itemize}
+\item Blender\\
+Blender had a large appeal due to is its extensibility through \texttt{Python} for
+this project The exposed API allows its users to  script typical actions, and develop add-ons in a familiar
+and standard environment. Part of this scripting API allows the user to add
+and remove objects, insert key-frames, and change the properties of an object,
+anything a user can do with a mouse and keyboard, is able to be configured
+programmatically. This allows Blender to be used a front end to any \texttt{Python}
+or \texttt{C++} program.
+\item \texttt{python-chess} library\\
+The \texttt{python-chess} library is a chess library for python with move validation,
+generation, and \texttt{PGN} (Portable Game Notation, the most common file format
+for chess games) parsing. This library is designed to be able to function as
+back-end, making it perfect to use in conjunction with Blender.
+\end{itemize}
+\section{The plan}
+\label{sec:org47a769a}
+During the proposal the plan was to create an interactive, real time chess
+board, however this was changed as the techniques and concepts would be severely
+limited. Blender with python scripting was a perfect compromise.
+\section{Blender implementation}
+\label{sec:org06a4367}
+\subsection{Modelling, textures, and shading}
+\label{sec:org8b0a4b3}
+The scaling of the models was deliberately chosen to be unrealistic in order to
+simplify the translation from position with the back to front end (See \hyperref[sec:org83e8bbd]{Python
+side - Array index to world space})
+\subsubsection{Nodes}
+\label{sec:orgd7f7222}
+Blender nodes allow for the creation of textures and shaders through a pipeline
+of simple operations to create complex procedural results. Its simple to
+understand visual workflow is a popular alternative to layer based compositing.
+\cite{node-vs-layer}
+
+Throughout this project, procedural texture and shading generation using nodes
+was used instead of the traditional texture wrapping using UV mapping in order
+to give objects consistent and appealing surfaces. This provides two relevant
+benefits;
+\begin{itemize}
+\item Tweaking textures and shading doesn't require an any more work than changing
+values on the respective node.
+\item Textures can be applied to any model without fitting issues, i.e. repetition
+and resolution.
+\end{itemize}
+\subsubsection{Shaders}
+\label{sec:org0e762a9}
+A shader is a program, typically run on the GPU, to computer the colour of a
+group or individual pixel. These shaders describe the lighting interactions of
+objects or surfaces, such as reflection, refractions, and absorption.
+\paragraph{Principled BSDF}
+\label{sec:orgf6c8e0b}
+A \texttt{BSDF} (Bidirectional Scattering Distribution Function) describes how light
+scatters on a surface. In computer graphics, computing a highly detailed
+microsurface is not feasible, instead it is replaced with a simplified
+macrosurface (See Figure \ref{micro-vs-macro}). As the surface no longer retains the
+detail it would in reality, light behaves differently on this new macrosurface.
+To compensate for this a \texttt{BSDF} is used that matches the aggregate direction
+scattering of the microsurface (at distance). \cite{ggx-paper}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.5\textwidth]{Images/macro vs micro.png}
+\caption{\label{micro-vs-macro}Micro vs macro surface \href{https://www.cs.cornell.edu/\~srm/publications/EGSR07-btdf.pdf}{(Source)}}
+\end{figure}
+
+Blenders implementation breaks down this problem down into two separate functions
+by assuming that the microsurface can be adequately described using a microfacet
+distribution function and a shadowing-masking function.
+
+Blender provides these options for the distribution and shadowing functions, and
+the subsurface methods.
+\begin{itemize}
+\item Distribution\footnote{Note that the \texttt{Distrubution} option Blender gives is different from the
+\texttt{Microfacet Distrubution Function}, and includes both the \texttt{MDF} and the
+Shadow-masking function.}
+\begin{itemize}
+\item GGX \\
+\texttt{GGX} is a \texttt{BRDF} (bidirectional reflection distribution function) which
+aims to be a faster than its alternative \texttt{Multiple-scattering GGX} at the
+cost  of physical accuracy.
+The \texttt{MDF} describes the distribution of microsurface normals \textbf{m} (Figure
+\ref{micro-vs-macro}) while the shadow masking function describes what fraction of
+the microsurface normals \textbf{m} are visible. \cite{ggx-paper}
+
+In \texttt{GGX} the shadow masking function does not account for reflections or
+scattering. This can create excessive darkening and a loss in energy
+conservation in some areas \cite{principled-bsdf-docs}.
+
+\item Multiple-scattering GGX \\
+Almost all popular parametric \texttt{BSDF}'s only consider single reflection
+to account for self-shadowing but omit outgoing light that scatters
+multiple times between microfacets. Omitting outgoing light  breaks
+conservation of energy and leads to dark patches within rough surfaces
+\cite{ms-ggx-paper}.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.9\linewidth]{Images/multiplescatteringsmith_teaser.png}
+\caption{Single scattering (left), multiple scatters (right), \href{https://eheitzresearch.files.wordpress.com/2015/10/multiplescatteringsmith\_teaser.png}{(Source)}}
+\end{figure}
+
+Blenders \texttt{Multiple-scattering GGX} \texttt{BRDF} allows for multiple light bounces
+within microfacets to achieve 100\% energy conservation and provide a more
+physically accurate render \cite{principled-bsdf-docs,ms-ggx-paper} . It
+accomplishes this by conducting a random walk on the microsurface until the
+ray escapes. Unlike \texttt{GGX} there is no known analytical expression for this
+model (Blender's specific implementation), it must instead be solved
+stochastically \cite{blender-issue-tracker}.
+This comes at a performance cost, the original papers cites a 19\% penalty
+using a Monte Carlo physically based renderer, Blenders development forums
+estimates the performance penalty to be approximately 3\% at the time of
+implementation \cite{blender-issue-tracker}.
+\end{itemize}
+
+\item Subsurface Scattering Method
+Subsurface scattering when light passes through an object that is normally
+opaque. Described by a \texttt{BSSRDF} (bidirectional subsurface scattering
+reflectance distribution function)
+\begin{itemize}
+\item Christensen-Burley \\
+The \texttt{Chistensen-Burley} method is an approximation of a physically based
+volumetric scattering system with faster evaluation and efficiency \cite{Christensen-Burley}.
+TODO
+\item Random walk \\
+\ldots{}
+This comes at a cost of rendering time (actually performance hit is largely
+dependent on the model itself), and increased noise.
+TODO
+\end{itemize}
+\end{itemize}
+
+
+All renders within this report have \texttt{Multiple-scattering GGX} enabled as the
+benefit was need to outweigh the cost.
+
+The \texttt{Principled BSDF} shader is a combination of multiple layers into a single
+node. This is done for ease of use.
+
+This shader encapsulates bidirectional reflectance and transmittance
+distribution functions. Individually these functions determine how light behaves
+on the surface and inside a material.
+
+
+\subsubsection{Pieces}
+\label{sec:orgc05a6c4}
+Pieces were modelled after the reference image below Figure \ref{piece-reference}.
+From this image the pieces where traced using the \texttt{Add Vertex} tool, from the
+\href{https://docs.blender.org/manual/en/2.92/addons/add\_mesh/mesh\_extra\_objects.html}{Add Mess Extra Objects} add-on. To transform this line of vertices to a solid
+object  a \texttt{Screw} modifier was applied.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.5\textwidth]{ref/bee5aa3d08a30da4ca1005cbd0fe10b54a03bb49.jpg}
@@ -152,70 +309,163 @@ Pieces were modelled after the reference image below Figure \ref{piece-reference
 The notable changes from the default settings is the lowering of the steps from
 \(16 \to 10\) and disabling \texttt{Smooth Shading}. This was a stylistic choice as it
 was believed that the low polygon look would better demonstration reflections and
-the planned indirect lighting (see \hyperref[sec:org0755980]{Lighting - Disco Ball}).
+the planned indirect lighting (See \hyperref[sec:org50c698f]{Lighting - Disco Ball}).
 
-To model the knight, 3 seperate reference images where used.
+To model the knight, 3 separate reference images where used. The base was
+constructed in a similar manner to the other pieces. The head was modelled
+manually (read painstakingly).
+
+\begin{figure}
 \begin{center}
 \includegraphics[width=0.3\textwidth]{ref/knight front.jpg}
 \includegraphics[width=0.3\textwidth]{ref/knight right.jpg}
 \includegraphics[width=0.3\textwidth]{ref/knight back.jpg}
 \end{center}
+\caption{Knight reference images, \href{https://imgur.com/a/Pg9WYII}{(Source)}}
+\end{figure}
+
 Additionally ico-spheres where added  to piece some pieces additional detail.
+The finally piece models appear as below.
 \begin{center}
 \includegraphics[width=0.5\textwidth]{Images/Pieces.png}
 \end{center}
 \subsubsection{Board}
-\label{sec:org9e93267}
-\begin{enumerate}
-\item Chess board
-\label{sec:orgc64f8a2}
-\item Marble exterior
-\label{sec:orgb95e97c}
-\end{enumerate}
-\subsubsection{Textures and shading}
-\label{sec:orgf2a96e7}
-\subsubsection{Particle effects}
-\label{sec:orgcc3f50b}
-\begin{enumerate}
-\item Explosions
-\label{sec:org2f5b2bd}
-\item Confetti
-\label{sec:orgf9dbb54}
-\end{enumerate}
-\subsubsection{Lighting}
-\label{sec:org4ca82ba}
-\begin{enumerate}
-\item Direct
-\label{sec:org7e7b9d0}
-\item Indirect
-\label{sec:org1989bbf}
-\item Disco ball
-\label{sec:org0755980}
-\end{enumerate}
-\subsubsection{Render engine}
-\label{sec:org9398bca}
-\begin{enumerate}
-\item Eevee
-\label{sec:org7575c9e}
-\item Cycles
-\label{sec:orgaa573e4}
-\begin{enumerate}
-\item Thank you to Jack
-\label{sec:org9e6ef0f}
-\end{enumerate}
-\item Luxcore
-\label{sec:orga6d0213}
-\end{enumerate}
-\subsection{Python side}
-\label{sec:org20f1376}
-\subsubsection{Processing games}
-\label{sec:org07b117c}
-\subsubsection{Unique pairing problem}
-\label{sec:org6a206e2}
-\subsubsection{The solution}
-\label{sec:org05ca28a}
-\subsubsection{Array index to world space}
-\label{sec:org5ea3396}
+\label{sec:orgca62c4f}
+\paragraph{Chess board}
+\label{sec:orgedf1908}
+The chess board model is a simple rectangular based prism with dimensions \texttt{8m x
+8m x 0.4m}. The checker board texture comes from the \texttt{Checker Texture}, with
+\texttt{scale=8.0} and black and white colours. This texture output is then feed into
+the base colour input of a \texttt{Principled BSDF} shader node.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=350pt]{Images/checker texture.png}
+\caption{\label{checker-texture}Complete checker board texture.}
+\end{figure}
+
+Within world space the board was positioned in the positive, positive quadrant
+such that the very bottom left handle corner of the board was at \texttt{0,0}
+with each squares dimensions as \texttt{1m x 1mx}. This positioning becomes important
+in \hyperref[sec:org83e8bbd]{Python implementation - Array index to world space}.
+\paragraph{Marble exterior}
+\label{sec:org8f4f098}
+\subsection{Particle effects}
+\label{sec:org466c359}
+\subsubsection{Explosions}
+\label{sec:org48b7e8f}
+\subsubsection{Confetti}
+\label{sec:orgc19d5ab}
+\subsection{Lighting}
+\label{sec:orgcaca2d7}
+\subsubsection{Direct}
+\label{sec:orgee12393}
+\subsubsection{Indirect}
+\label{sec:org9457f4f}
+\subsubsection{Disco ball}
+\label{sec:org50c698f}
+\subsection{Render engine}
+\label{sec:org67b78ef}
+\subsubsection{Eevee}
+\label{sec:org28f8243}
+\subsubsection{Cycles}
+\label{sec:org5805e52}
+\paragraph{Thank you to Jack}
+\label{sec:org6c432d0}
+Due to significant hardware limitations for ray-tracing (\texttt{GTX 760, i5-4670}), a
+favour was called in with a good friend, Jack kindly lent their \texttt{RTX 2070}  for a
+cycles render. See \href{https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble\_cycles.mp4}{master/Videos/Marble\textsubscript{cycles.mp4}}.
+\subsubsection{Luxcore}
+\label{sec:org2964bea}
+\subsubsection{Tragedy - 22:20, 01/June/2021}
+\label{sec:org9d7c9ff}
+At 10:20pm on the first of June the PC that had been enslaved to rendering for
+more than 96 hours straight, died. It had been a good 8 years, but she finally
+gave out. Official cause of death is unknown but it suspected to be something to
+do with power delivery.
+
+A successful data recovery was conducted the next morning.
+\section{Python implementation}
+\label{sec:org635c080}
+\subsection{Processing games}
+\label{sec:org8d0c0bb}
+Reading and stepping through games is handled almost entirely by the chess
+library. No special considerations need to be made here. The minium working
+example below demonstrates all that is necessary to step through an entire game.
+
+\begin{Code}
+\begin{Verbatim}[]
+\color[HTML]{383a42}\EFk{import} chess
+\EFk{with} \EFb{open}(filename) \EFk{as} \EFv{pgn}:
+    game = chess.pgn.read\_game(pgn) \EFcd{\# }\EFct{Parses pgn file}
+    \EFv{board} = game.board()
+
+    \EFk{for} move \EFk{in} game.mainline\_moves():
+        board.push(move) \EFcd{\# }\EFct{Pushs the move to the move stack, this "makes" the move}
+\end{Verbatim}
+\end{Code}
+\subsection{Pairing problem}
+\label{sec:org7ffc277}
+During a game of chess there is nothing in between moves, simply one discrete
+board state after another. This is also how the chess library makes moves, by
+computing differences and tracking board states, while this is reliable and
+simple it does not play nice when games become continuous (animated).
+
+Initially this script also tracked the board state using a dictionary, with the
+square as the key, and corresponding blender object as the value, pushing and
+pop at each move. However, this presented difficulties when implementing
+animations and special moves and animations. The code was generally cluttered
+and not up to an acceptable quality.
+\subsection{The solution}
+\label{sec:org7dac770}
+To remedy the mentioned problems a custom class was devised, and aptly name
+\texttt{CustomPiece}. This class acts as a generalised representation of a piece which
+is able to act upon itself and the Blender model it puppets. Stored within an
+unrolled 2d array with the index representing its position on the chess board
+(See \hyperref[sec:org83e8bbd]{Python implementation - Array Index to world space}) the object is able to
+move itself within the array while handling move and capture animations. Special
+move handling is generalised into the main loop, (See \hyperref[sec:orgbc2a84b]{Python implementation -
+Special moves}).
+
+This design approach has clear advantages such as
+\begin{itemize}
+\item Adheres to the \texttt{Model-View-Controller} design philosophy.
+\item Array and object manipulation is not handled at any higher level than required.
+\item Translation between the chess library interface and Blenders API is seamless.
+\item Creates a unique object that pairs a Blender model to a \texttt{python-chess}
+\texttt{PieceType}.
+\end{itemize}
+However, the self-referential nature of objects manipulating the array their
+are stored in adds significantly to the complexity. Luckily the implementation is
+simple.
+
+An initial sketch of this class can be seen here \ref{class-sketch}.
+
+Implementation can be see here \ref{class-src}.
+\subsection{Array index to world space}
+\label{sec:org83e8bbd}
+\texttt{python-chess} provides great functionality to retrieve what square a move is
+coming from, and going to. Internally this is stored as a \texttt{int} representing
+each square in 1d array notation.
+
+\begin{minipage}{0.5\textwidth}
+\begin{Code}
+\begin{Verbatim}[]
+\color[HTML]{383a42}\EFv{Square} = \EFb{int}
+\EFv{SQUARES} = [
+    A1, B1, C1, D1, E1, F1, G1, H1,
+    A2, B2, C2, D2, E2, F2, G2, H2,
+    A3, B3, C3, D3, E3, F3, G3, H3,
+    A4, B4, C4, D4, E4, F4, G4, H4,
+    A5, B5, C5, D5, E5, F5, G5, H5,
+    A6, B6, C6, D6, E6, F6, G6, H6,
+    A7, B7, C7, D7, E7, F7, G7, H7,
+    A8, B8, C8, D8, E8, F8, G8, H8,
+] = \EFb{range}(\EFhn{64})
+\end{Verbatim}
+\end{Code}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
 \setchessboard{color=black,clearboard,showmover=false}
 \chessboard[
 pgfstyle=
@@ -223,48 +473,133 @@ pgfstyle=
 text= \fontsize{1.2ex}{1.2ex}\bfseries
 \sffamily\getfieldnumber\currentwq,
 markboard]
-\begin{enumerate}
-\item Abuse of this functionality
-\label{sec:orgf5fd2a9}
-\end{enumerate}
-\subsubsection{Special moves}
-\label{sec:org5bfcaa3}
-\begin{enumerate}
-\item Promotion
-\label{sec:org9319925}
-\item En passant
-\label{sec:org9945573}
-\item Castling
-\label{sec:orgdc5ab0c}
-\end{enumerate}
-\subsubsection{Animation}
-\label{sec:orgdbb2220}
-\begin{enumerate}
-\item Key frames
-\label{sec:org10415ee}
-\begin{enumerate}
-\item Timing
-\label{sec:org804b7d2}
-\end{enumerate}
-\item Interpolation
-\label{sec:org6a70068}
-\end{enumerate}
+\end{minipage}
+\newpage
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.5\textwidth]{Images/array.png}
+\caption{\label{array-working}Array representation ((\texttt{tl}) Source code, (\texttt{tr}) Chess board, (\texttt{b}) Overlaid)}
+\end{figure}
+
+To convert form array indexing two simple expressions were used.
+\[x = (\text{INDEX mod } 8) + 0.5\]
+\[y = (\text{INDEX div } 8) + 0.5\]\footnote{Note \texttt{div} here is integer division.}
+Note the addition of \(0.5\) is to centre the pieces on the board squares in
+world space and will be excluded from further examples.
+\subsubsection{Abuse of this functionality}
+\label{sec:orge55eb8f}
+\begin{wrapfigure}[14]{r}{0.4\textwidth}
+\centering
+\includegraphics[width=0.35\textwidth]{Images/tikzit_image0.png}
+\caption{\label{extended-array}Extended conversion}
+\end{wrapfigure}
+
+While modulo will always produce a positive integer between \(0 \to 7\), integer
+division can result negative numbers and is not bounded. Using this the mapping
+can be extended past the board it was designed for.
+
+This provides an easy method to place captured piece after their animation. By
+storing each pieces initial position, and adding or subtracting \(16\) depending on
+the colour, pieces can be placed \(2\) rows behind their initial position.
+
+Two rows behind was preferable to the respective position on the other side of
+the board to avoid the inversion required so that the pawns would be in front of the
+back rank pieces.
+
+\newpage
+\subsection{Special moves}
+\label{sec:orgbc2a84b}
+Figure \ref{flowchart} shows the main loop logic, used to move the correct pieces.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{flowchart.pdf}
+\caption{\label{flowchart}Main loop logic}
+\end{figure}
+\subsubsection{Castling}
+\label{sec:org8b281e4}
+Within standard chess there are only four castling possibilities, these are easy
+enough to check naively. This is the only section that limits this script to
+standard chess. To extend support to \texttt{chess960}, a bit-board mask of all the
+rooks with castling rights could be filtered to obtain the index of the rook
+that will be castled. See \href{https://python-chess.readthedocs.io/en/latest/core.html?highlight=castl\#chess.Board.castling\_rights}{the documentation.}
+\begin{Code}
+\begin{Verbatim}[]
+\color[HTML]{383a42}\EFk{if} board.is\_castling(move):
+    \EFk{if} board.turn: \EFcd{\# }\EFct{White}
+        \EFk{if} board.is\_kingside\_castling(move):
+            array[chess.H1].move(chess.F1)
+        \EFk{else}: \EFcd{\# }\EFct{queen side}
+            array[chess.A1].move(chess.D1)
+    \EFk{else}: \EFcd{\# }\EFct{Black}
+        \EFk{if} board.is\_kingside\_castling(move):
+            array[chess.H8].move(chess.F8)
+        \EFk{else}: \EFcd{\# }\EFct{queen side}
+            array[chess.A8].move(chess.D8)
+\end{Verbatim}
+\end{Code}
+\subsubsection{En passant}
+\label{sec:orge9064ae}
+The \texttt{python-chess} library makes handling en passant a breeze. The move is
+checked if it is an en passant first, then as only one square is possible of an
+en passant on any move that position is retrieved.
+\begin{Code}
+\begin{Verbatim}[]
+\color[HTML]{383a42}    \EFk{else}: \EFcd{\# }\EFct{standard case}
+        \EFk{if} board.is\_capture(move):\EFcd{\# }\EFct{is en passant, great...}
+            \EFk{if} board.is\_en\_passant(move):
+                array[board.ep\_square].die() \EFcd{\# }\textcolor[HTML]{c3e88d}{\textbf{NOTE}}\EFct{, object is gc'ed}
+            \EFk{else}: \EFcd{\# }\EFct{its a normal capture}
+                array[locTo].die() \EFcd{\# }\textcolor[HTML]{c3e88d}{\textbf{NOTE}}\EFct{, object is gc'ed}
+\end{Verbatim}
+\end{Code}
+\subsubsection{Promotion}
+\label{sec:orgdfe7b04}
+Contained within a separate conditional is the promotion logic. This is handled
+separately from the rest of the logic as a move can be both a capture and a
+promotion.
+\begin{Code}
+\begin{Verbatim}[]
+\color[HTML]{383a42}    array[locFrom].move(locTo) \EFcd{\# }\textcolor[HTML]{c3e88d}{\textbf{NOTE}}\EFct{, piece moves always}
+
+    \EFk{if} move.promotion \EFk{is} \EFk{not} \EFc{None}:
+        array[locTo].keyframe\_insert(data\_path=\EFs{"location"}, index=-\EFhn{1})
+        array[locTo].hide\_now() \EFcd{\# }\EFct{hide\_now unlinks within blender}
+        pieceType = move.promotion \EFcd{\# }\EFct{piece type promoting to}
+        array[\EFv{locTo}] = CustomPiece(chess.Piece(pieceType, board.turn),\char92{}
+                                   SOURCE\_PIECES[chess.piece\_symbol(pieceType)],\char92{}
+                                   array, locTo) \EFcd{\# }\EFct{shiny new object}
+        array[locTo].show\_now()
+\end{Verbatim}
+\end{Code}
+A new key-frame is inserted initially as the piece that will promote has already
+been moved and that animation needs to finish before it can be hidden.
+
+Within the Blender view port the pieces that will be promoted too already exist
+at the right position, they are just not rendered until needed.
+\subsection{Animation}
+\label{sec:orgfe6ae7e}
+\subsubsection{Key frames}
+\label{sec:org5302bf1}
+\paragraph{Timing}
+\label{sec:org4fb0dfd}
+\subsubsection{Interpolation}
+\label{sec:orgf3662a2}
 \subsection{Reproducibility}
-\label{sec:org4127249}
+\label{sec:org4a86698}
 This project was created used
 \begin{itemize}
 \item Blender \texttt{2.92}
 \url{https://www.blender.org/}
 \item Python \texttt{3.9.5} \footnote{Blender comes bundled with this version. If the system python is used
-instead ensure it is above \texttt{3.7} for the \texttt{\_\_future\_\_} module.}
+instead ensure it matches the version Blender was build with and is above \texttt{3.7} for the \texttt{\_\_future\_\_} module.}
 \url{https://www.python.org/}
 \item python-chess \texttt{1.5.0} \footnote{This project requires the \texttt{Outcome} class released in \texttt{1.5.0}}
 \url{https://github.com/niklasf/python-chess}
 \end{itemize}
 \subsubsection{Python environment}
-\label{sec:org092b555}
-Blender is distributed with its own python installation for consistency,
-however this means that installed python modules are not present
+\label{sec:org9c5c68b}
+Blender is distributed with its own python installation for consistency, however
+this means that installed python modules are not present
 \cite{blender-python-env}. To mitigate this the \texttt{-{}-target} flag for \texttt{pip install}
 can be used to install directly to the blender python environment
 \cite{pip-install-man}.
@@ -273,15 +608,87 @@ can be used to install directly to the blender python environment
 \color[HTML]{383a42}pip install -t \char126{}/.config/blender/2.92/scripts/modules chess
 \end{Verbatim}
 \end{Code}
+This ensures Blenders \texttt{Python} will has access to the required librarys for this
+script to function.
 
 \section{Results}
-\label{sec:org651a5cd}
+\label{sec:orgf5a4f6c}
 \section{Evaluation}
-\label{sec:orgaa4e938}
+\label{sec:org431321f}
 
 \newpage
 \section{Appendix}
-\label{sec:orgd0a78ad}
+\label{sec:org72b8651}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{Scratchpad.pdf}
+\caption{\label{class-sketch}\texttt{CustomPiece} Initial sketch}
+\end{figure}
+
+\begin{Code}
+\begin{Verbatim}[]
+\color[HTML]{383a42}\EFk{class} \EFt{CustomPiece}():
+    \EFk{def} \EFf{\_\_init\_\_}(\EFk{self}, \EFv{pieceType}: chess.Piece, blender\_obj: bpy.types.Object,\char92{}
+                 array: List[Optional[CustomPiece]], loc: \EFb{int}):
+        \EFk{self}.\_pieceType = pieceType.piece\_type \EFcd{\# }\EFct{int}
+        \EFk{self}.\EFv{\_colour} = pieceType.color         \EFcd{\# }\EFct{bool}
+        \EFk{self}.\EFv{\_blender\_obj} = blender\_obj.copy()
+        \EFk{self}.\EFv{\_array} = array                    \EFcd{\# }\EFct{reference to array containing self}
+        \EFk{self}.\EFv{\_inital\_loc} = loc
+        \EFk{self}.\EFv{\_loc} = loc                        \EFcd{\# }\EFct{int (1d array index)}
+
+        \EFv{x}, \EFv{y} = square\_to\_world\_space(\EFk{self}.\_loc)
+        \EFk{self}.\_blender\_obj.\EFv{location} = Vector((x, y, \EFhn{0.3}))
+
+        \EFcd{\# }\EFct{set material based on colour}
+        \EFk{if} \EFk{self}.\EFv{\_colour}:
+            \EFk{self}.\_mat = bpy.data.materials[\EFs{"White pieces"}]
+        \EFk{else}:
+            \EFk{self}.\_mat = bpy.data.materials[\EFs{"Black pieces"}]
+        \EFk{self}.\_blender\_obj.\EFv{active\_material} = \EFk{self}.\_mat
+
+
+        \EFk{if} \EFk{self}.\_colour \EFk{and} \EFk{self}.\_pieceType == chess.KNIGHT:
+            \EFk{self}.\_blender\_obj.rotation\_euler[\EFhn{2}] = radians(\EFhn{180}) \EFcd{\#}\EFct{XYZ}
+        \EFcd{\# }\EFct{add object to collection so its visable}
+        bpy.data.collections[[\EFs{'Black'}, \EFs{'White'}][\EFk{self}.\_colour]].objects.link(\EFk{self}.\_blender\_obj)
+
+    \EFk{def} \EFf{move}(\EFk{self}, new\_loc: \EFb{int}, zTo: \EFb{float} = \EFhn{0.3}):
+        \EFv{xTo}, \EFv{yTo} = square\_to\_world\_space(new\_loc)
+        \EFk{self}.\_blender\_obj.location = Vector((xTo, yTo, zTo))
+        \EFk{print}(\EFs{"Moved to "}, \EFk{self}.\_blender\_obj.location)
+
+        \EFk{self}.\_array[\EFv{new\_loc}] = \EFk{self}
+        \EFk{self}.\_array[\EFk{self}.\EFv{\_loc}] = \EFc{None}
+
+        \EFk{self}.\_loc = new\_loc
+
+    \EFk{def} \EFf{die}(\EFk{self}) -> CustomPiece:
+        \EFk{self}.\_array[\EFk{self}.\EFv{\_loc}] = \EFc{None}
+        \EFk{self}.keyframe\_insert(data\_path=\EFs{"location"}, frame=FRAME\_COUNT-\EFhn{6})
+
+        \EFv{xTo}, \EFv{yTo} = square\_to\_world\_space(\EFk{self}.\_loc)
+        \EFk{self}.\_blender\_obj.location = Vector((xTo, yTo, \EFhn{2.1}))
+        \EFk{self}.keyframe\_insert(data\_path=\EFs{"location"}, frame=FRAME\_COUNT+\EFhn{3})
+
+        \EFk{if} \EFk{self}.\_colour:
+            \EFk{self}.\_inital\_loc += -\EFhn{16}
+        \EFk{else}:
+            \EFk{self}.\_inital\_loc += \EFhn{16}
+
+        \EFv{xTo}, \EFv{yTo} = square\_to\_world\_space(\EFk{self}.\_inital\_loc)
+        \EFk{self}.\_blender\_obj.location = Vector((xTo, yTo, \EFhn{2.1}))
+        \EFk{self}.keyframe\_insert(data\_path=\EFs{"location"}, frame=FRAME\_COUNT+\EFhn{21})
+
+        \EFv{xTo}, \EFv{yTo} = square\_to\_world\_space(\EFk{self}.\_inital\_loc)
+        \EFk{self}.\_blender\_obj.location = Vector((xTo, yTo, \EFhn{0.1}))
+        \EFk{self}.keyframe\_insert(data\_path=\EFs{"location"}, frame=FRAME\_COUNT+\EFhn{29})
+
+        \EFk{return} \EFk{self}
+\end{Verbatim}
+\end{Code}
+\label{class-src}
+
 \newpage
 \printbibliography
 \end{document}

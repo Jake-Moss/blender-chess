@@ -1,7 +1,7 @@
 #+TITLE: Chess game animation in blender
 #+author: Jake Moss - s46409665
 #+latex_header: \usepackage[top=1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
-#+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER: \usepackage{amsmath}
 #+latex_header: \usepackage[style=ieee,hyperref=true,backref=true,url=true,backend=biber,natbib=true]{biblatex}
 #+latex_header: \addbibresource{ref.bib}
 #+latex_header: \usepackage{chessboard}
@@ -11,17 +11,152 @@
 #+latex_header:   \fp_eval:n { (\tl_tail:V #1 -1)*8 + \exp_args:Ne\int_from_alph:n{\tl_head:V #1} -1}
 #+latex_header:  }
 #+latex_header: \ExplSyntaxOff
+#+latex_header: \usepackage{titlesec}
+#+latex_header: \setcounter{secnumdepth}{4}
+#+latex_header: \titleformat{\paragraph}
+#+latex_header: {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+#+latex_header: \titlespacing*{\paragraph}
+#+latex_header: {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 #+options: tasks:nil
-
+#+OPTIONS: H:4
 \newpage
 
 * Introduction
 ** Project aims
-* The idea
-* Implementation
-** Blender side
-*** Piece modelling
-Pieces were modelled after the reference image below Figure ref:piece-reference. From this image the pieces where traced using the ~Add Vertex~ tool, from the [[https://docs.blender.org/manual/en/2.92/addons/add_mesh/mesh_extra_objects.html][Add Mess Extra Objects]] add-on. To transform this line of vertices to a solid object  a ~Screw~ modifier was applied.
+This project aims to demonstrate a sufficient knowledge of computer graphics
+techniques and implementations through the creation of a visually appealing
+chess game animation tool. This was accomplished using Blender, and its python
+scripting API.
+
+This project utilises two tools to create the chess animation
++ Blender\\
+  Blender had a large appeal due to is its extensibility through ~Python~ for
+  this project The exposed API allows its users to  script typical actions, and develop add-ons in a familiar
+  and standard environment. Part of this scripting API allows the user to add
+  and remove objects, insert key-frames, and change the properties of an object,
+  anything a user can do with a mouse and keyboard, is able to be configured
+  programmatically. This allows Blender to be used a front end to any ~Python~
+  or ~C++~ program.
++ ~python-chess~ library\\
+  The ~python-chess~ library is a chess library for python with move validation,
+  generation, and ~PGN~ (Portable Game Notation, the most common file format
+  for chess games) parsing. This library is designed to be able to function as
+  back-end, making it perfect to use in conjunction with Blender.
+* The plan
+During the proposal the plan was to create an interactive, real time chess
+board, however this was changed as the techniques and concepts would be severely
+limited. Blender with python scripting was a perfect compromise.
+* Blender implementation
+** Modelling, textures, and shading
+The scaling of the models was deliberately chosen to be unrealistic in order to
+simplify the translation from position with the back to front end (See [[*Array index to world space][Python
+side - Array index to world space]])
+*** Nodes
+Blender nodes allow for the creation of textures and shaders through a pipeline
+of simple operations to create complex procedural results. Its simple to
+understand visual workflow is a popular alternative to layer based compositing.
+cite:node-vs-layer
+
+Throughout this project, procedural texture and shading generation using nodes
+was used instead of the traditional texture wrapping using UV mapping in order
+to give objects consistent and appealing surfaces. This provides two relevant
+benefits;
++ Tweaking textures and shading doesn't require an any more work than changing
+  values on the respective node.
++ Textures can be applied to any model without fitting issues, i.e. repetition
+  and resolution.
+*** Shaders
+A shader is a program, typically run on the GPU, to computer the colour of a
+group or individual pixel. These shaders describe the lighting interactions of
+objects or surfaces, such as reflection, refractions, and absorption.
+**** Principled BSDF
+A ~BSDF~ (Bidirectional Scattering Distribution Function) describes how light
+scatters on a surface. In computer graphics, computing a highly detailed
+microsurface is not feasible, instead it is replaced with a simplified
+macrosurface (See Figure [[ref:micro-vs-macro]]). As the surface no longer retains the
+detail it would in reality, light behaves differently on this new macrosurface.
+To compensate for this a ~BSDF~ is used that matches the aggregate direction
+scattering of the microsurface (at distance). cite:ggx-paper
+#+name: micro-vs-macro
+#+caption: Micro vs macro surface [[https://www.cs.cornell.edu/~srm/publications/EGSR07-btdf.pdf][(Source)]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.5\textwidth
+[[file:Images/macro vs micro.png]]
+
+Blenders implementation breaks down this problem down into two separate functions
+by assuming that the microsurface can be adequately described using a microfacet
+distribution function and a shadowing-masking function.
+
+Blender provides these options for the distribution and shadowing functions, and
+the subsurface methods.
+ + Distribution[fn:3]
+   - GGX \\
+     ~GGX~ is a ~BRDF~ (bidirectional reflection distribution function) which
+     aims to be a faster than its alternative ~Multiple-scattering GGX~ at the
+     cost  of physical accuracy.
+     The ~MDF~ describes the distribution of microsurface normals *m* (Figure
+     [[ref:micro-vs-macro]]) while the shadow masking function describes what fraction of
+     the microsurface normals *m* are visible. cite:ggx-paper
+
+     In ~GGX~ the shadow masking function does not account for reflections or
+     scattering. This can create excessive darkening and a loss in energy
+     conservation in some areas cite:principled-bsdf-docs.
+
+   - Multiple-scattering GGX \\
+     Almost all popular parametric ~BSDF~'s only consider single reflection
+     to account for self-shadowing but omit outgoing light that scatters
+     multiple times between microfacets. Omitting outgoing light  breaks
+     conservation of energy and leads to dark patches within rough surfaces
+     cite:ms-ggx-paper.
+     #+name: single-vs-multiple
+     #+attr_org: :height 200
+     #+arrr_latex: :width 0.7\textwidth
+     #+caption: Single scattering (left), multiple scatters (right), [[https://eheitzresearch.files.wordpress.com/2015/10/multiplescatteringsmith_teaser.png][(Source)]]
+     [[file:Images/multiplescatteringsmith_teaser.png]]
+
+     Blenders ~Multiple-scattering GGX~ ~BRDF~ allows for multiple light bounces
+     within microfacets to achieve 100% energy conservation and provide a more
+     physically accurate render cite:principled-bsdf-docs,ms-ggx-paper . It
+     accomplishes this by conducting a random walk on the microsurface until the
+     ray escapes. Unlike ~GGX~ there is no known analytical expression for this
+     model (Blender's specific implementation), it must instead be solved
+     stochastically cite:blender-issue-tracker.
+     This comes at a performance cost, the original papers cites a 19% penalty
+     using a Monte Carlo physically based renderer, Blenders development forums
+     estimates the performance penalty to be approximately 3% at the time of
+     implementation cite:blender-issue-tracker.
+
+ + Subsurface Scattering Method
+   Subsurface scattering when light passes through an object that is normally
+   opaque. Described by a ~BSSRDF~ (bidirectional subsurface scattering
+   reflectance distribution function)
+   - Christensen-Burley \\
+     The ~Chistensen-Burley~ method is an approximation of a physically based
+     volumetric scattering system with faster evaluation and efficiency cite:Christensen-Burley.
+     TODO
+   - Random walk \\
+     ...
+     This comes at a cost of rendering time (actually performance hit is largely
+     dependent on the model itself), and increased noise.
+     TODO
+
+
+All renders within this report have ~Multiple-scattering GGX~ enabled as the
+benefit was need to outweigh the cost.
+
+The ~Principled BSDF~ shader is a combination of multiple layers into a single
+node. This is done for ease of use.
+
+This shader encapsulates bidirectional reflectance and transmittance
+distribution functions. Individually these functions determine how light behaves
+on the surface and inside a material.
+
+
+*** Pieces
+Pieces were modelled after the reference image below Figure ref:piece-reference.
+From this image the pieces where traced using the ~Add Vertex~ tool, from the
+[[https://docs.blender.org/manual/en/2.92/addons/add_mesh/mesh_extra_objects.html][Add Mess Extra Objects]] add-on. To transform this line of vertices to a solid
+object  a ~Screw~ modifier was applied.
 #+caption: Reference image, Licensed under [[https://pixabay.com/service/license/][Pixabay License]]
 #+name: piece-reference
 #+attr_org: :width 200
@@ -42,10 +177,13 @@ Pieces were modelled after the reference image below Figure ref:piece-reference.
 The notable changes from the default settings is the lowering of the steps from
 \(16 \to 10\) and disabling ~Smooth Shading~. This was a stylistic choice as it
 was believed that the low polygon look would better demonstration reflections and
-the planned indirect lighting (see [[*Disco ball][Lighting - Disco Ball]]).
+the planned indirect lighting (See [[*Disco ball][Lighting - Disco Ball]]).
 
 To model the knight, 3 separate reference images where used. The base was
-constructed in a similar manner to the other pieces. The head was made manually.
+constructed in a similar manner to the other pieces. The head was modelled
+manually (read painstakingly).
+
+#+latex: \begin{figure}
 #+begin_center
 #+attr_org: :width 200
 #+attr_latex: :width 0.3\textwidth :center nil
@@ -57,6 +195,9 @@ constructed in a similar manner to the other pieces. The head was made manually.
 #+attr_latex: :width 0.3\textwidth :center nil
 [[file:ref/knight back.jpg]]
 #+end_center
+#+latex: \caption{Knight reference images, \href{https://imgur.com/a/Pg9WYII}{(Source)}}
+#+latex: \end{figure}
+
 Additionally ico-spheres where added  to piece some pieces additional detail.
 The finally piece models appear as below.
 #+attr_org: :width 200
@@ -64,31 +205,116 @@ The finally piece models appear as below.
 [[file:Images/Pieces.png]]
 *** Board
 **** Chess board
-The chess board model is a simple
+The chess board model is a simple rectangular based prism with dimensions ~8m x
+8m x 0.4m~. The checker board texture comes from the ~Checker Texture~, with
+~scale=8.0~ and black and white colours. This texture output is then feed into
+the base colour input of a ~Principled BSDF~ shader node.
+
+#+name: checker-texture
+#+caption: Complete checker board texture.
+#+attr_org: :height 100
+#+attr_latex: :width 350pt
+[[file:Images/checker texture.png]]
+
+Within world space the board was positioned in the positive, positive quadrant
+such that the very bottom left handle corner of the board was at ~0,0~
+with each squares dimensions as ~1m x 1mx~. This positioning becomes important
+in [[*Array index to world space][Python implementation - Array index to world space]].
 **** Marble exterior
-*** Textures and shading
-# Need specific shaders in here
-*** Particle effects
-**** Explosions
-**** Confetti
-*** Lighting
-**** Direct
-**** Indirect
-**** Disco ball
-*** Render engine
-**** Eevee
-**** Cycles
-***** Thank you to Jack
+** Particle effects
+*** Explosions
+*** Confetti
+** Lighting
+*** Direct
+*** Indirect
+*** Disco ball
+** Render engine
+*** Eevee
+*** Cycles
+**** Thank you to Jack
 Due to significant hardware limitations for ray-tracing (~GTX 760, i5-4670~), a
 favour was called in with a good friend, Jack kindly lent their ~RTX 2070~  for a
-cycles render. See
-**** Luxcore
-** Python side
-*** Processing games
-*** Unique pairing problem
-*** The solution
-*** Array index to world space
+cycles render. See [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble_cycles.mp4][master/Videos/Marble_cycles.mp4]].
+*** Luxcore
+*** Tragedy - 22:20, 01/June/2021
+At 10:20pm on the first of June the PC that had been enslaved to rendering for
+more than 96 hours straight, died. It had been a good 8 years, but she finally
+gave out. Official cause of death is unknown but it suspected to be something to
+do with power delivery.
+
+A successful data recovery was conducted the next morning.
+* Python implementation
+** Processing games
+Reading and stepping through games is handled almost entirely by the chess
+library. No special considerations need to be made here. The minium working
+example below demonstrates all that is necessary to step through an entire game.
+
+#+name: python-chess-example
+#+begin_src python :exports code
+import chess
+with open(filename) as pgn:
+    game = chess.pgn.read_game(pgn) # Parses pgn file
+    board = game.board()
+
+    for move in game.mainline_moves():
+        board.push(move) # Pushs the move to the move stack, this "makes" the move
+#+end_src
+** Pairing problem
+During a game of chess there is nothing in between moves, simply one discrete
+board state after another. This is also how the chess library makes moves, by
+computing differences and tracking board states, while this is reliable and
+simple it does not play nice when games become continuous (animated).
+
+Initially this script also tracked the board state using a dictionary, with the
+square as the key, and corresponding blender object as the value, pushing and
+pop at each move. However, this presented difficulties when implementing
+animations and special moves and animations. The code was generally cluttered
+and not up to an acceptable quality.
+** The solution
+To remedy the mentioned problems a custom class was devised, and aptly name
+~CustomPiece~. This class acts as a generalised representation of a piece which
+is able to act upon itself and the Blender model it puppets. Stored within an
+unrolled 2d array with the index representing its position on the chess board
+(See [[*Array index to world space][Python implementation - Array Index to world space]]) the object is able to
+move itself within the array while handling move and capture animations. Special
+move handling is generalised into the main loop, (See [[*Special moves][Python implementation -
+Special moves]]).
+
+This design approach has clear advantages such as
+- Adheres to the ~Model-View-Controller~ design philosophy.
+- Array and object manipulation is not handled at any higher level than required.
+- Translation between the chess library interface and Blenders API is seamless.
+- Creates a unique object that pairs a Blender model to a ~python-chess~
+  ~PieceType~.
+However, the self-referential nature of objects manipulating the array their
+are stored in adds significantly to the complexity. Luckily the implementation is
+simple.
+
+An initial sketch of this class can be seen here [[ref:class-sketch]].
+
+Implementation can be see here [[ref:class-src]].
+** Array index to world space
+~python-chess~ provides great functionality to retrieve what square a move is
+coming from, and going to. Internally this is stored as a ~int~ representing
+each square in 1d array notation.
+
+#+LATEX: \begin{minipage}{0.5\textwidth}
+#+begin_src python :exports code
+Square = int
+SQUARES = [
+    A1, B1, C1, D1, E1, F1, G1, H1,
+    A2, B2, C2, D2, E2, F2, G2, H2,
+    A3, B3, C3, D3, E3, F3, G3, H3,
+    A4, B4, C4, D4, E4, F4, G4, H4,
+    A5, B5, C5, D5, E5, F5, G5, H5,
+    A6, B6, C6, D6, E6, F6, G6, H6,
+    A7, B7, C7, D7, E7, F7, G7, H7,
+    A8, B8, C8, D8, E8, F8, G8, H8,
+] = range(64)
+#+end_src
+#+LATEX: \end{minipage}
 #+begin_export latex
+\begin{minipage}{0.5\textwidth}
 \setchessboard{color=black,clearboard,showmover=false}
 \chessboard[
 pgfstyle=
@@ -96,16 +322,133 @@ pgfstyle=
 text= \fontsize{1.2ex}{1.2ex}\bfseries
 \sffamily\getfieldnumber\currentwq,
 markboard]
+\end{minipage}
 #+end_export
-**** Abuse of this functionality
-*** Special moves
-**** Promotion
-**** En passant
-**** Castling
-*** Animation
-**** Key frames
-***** Timing
-**** Interpolation
+\newpage
+#+name: array-working
+#+caption: Array representation ((~tl~) Source code, (~tr~) Chess board, (~b~) Overlaid)
+#+attr_latex: :width 0.5\textwidth
+#+attr_org: :width 200
+[[file:Images/array.png]]
+
+To convert form array indexing two simple expressions were used.
+\[x = (\text{INDEX mod } 8) + 0.5\]
+\[y = (\text{INDEX div } 8) + 0.5\][fn:4]
+Note the addition of \(0.5\) is to centre the pieces on the board squares in
+world space and will be excluded from further examples.
+*** Abuse of this functionality
+#+name: extended-array
+#+caption: Extended conversion
+#+attr_org: :width 200
+#+attr_latex: :float wrap :width 0.35\textwidth :placement [14]{r}{0.4\textwidth}
+[[file:Images/tikzit_image0.png]]
+
+While modulo will always produce a positive integer between \(0 \to 7\), integer
+division can result negative numbers and is not bounded. Using this the mapping
+can be extended past the board it was designed for.
+
+This provides an easy method to place captured piece after their animation. By
+storing each pieces initial position, and adding or subtracting \(16\) depending on
+the colour, pieces can be placed \(2\) rows behind their initial position.
+
+Two rows behind was preferable to the respective position on the other side of
+the board to avoid the inversion required so that the pawns would be in front of the
+back rank pieces.
+
+\newpage
+** Special moves
+Figure [[ref:flowchart]] shows the main loop logic, used to move the correct pieces.
+#+name: flowchart
+#+caption: Main loop logic
+#+attr_latex: :width \textwidth
+#+attr_org: :width 200
+[[file:flowchart.pdf]]
+*** Castling
+Within standard chess there are only four castling possibilities, these are easy
+enough to check naively. This is the only section that limits this script to
+standard chess. To extend support to ~chess960~, a bit-board mask of all the
+rooks with castling rights could be filtered to obtain the index of the rook
+that will be castled. See [[https://python-chess.readthedocs.io/en/latest/core.html?highlight=castl#chess.Board.castling_rights][the documentation.]]
+#+begin_src python :exports code
+if board.is_castling(move):
+    if board.turn: # White
+        if board.is_kingside_castling(move):
+            array[chess.H1].move(chess.F1)
+        else: # queen side
+            array[chess.A1].move(chess.D1)
+    else: # Black
+        if board.is_kingside_castling(move):
+            array[chess.H8].move(chess.F8)
+        else: # queen side
+            array[chess.A8].move(chess.D8)
+#+end_src
+*** En passant
+The ~python-chess~ library makes handling en passant a breeze. The move is
+checked if it is an en passant first, then as only one square is possible of an
+en passant on any move that position is retrieved.
+#+begin_src python :exports code
+    else: # standard case
+        if board.is_capture(move):# is en passant, great...
+            if board.is_en_passant(move):
+                array[board.ep_square].die() # NOTE, object is gc'ed
+            else: # its a normal capture
+                array[locTo].die() # NOTE, object is gc'ed
+#+end_src
+*** Promotion
+Contained within a separate conditional is the promotion logic. This is handled
+separately from the rest of the logic as a move can be both a capture and a
+promotion.
+#+begin_src python :exports code
+    array[locFrom].move(locTo) # NOTE, piece moves always
+
+    if move.promotion is not None:
+        array[locTo].keyframe_insert(data_path="location", index=-1)
+        array[locTo].hide_now() # hide_now unlinks within blender
+        pieceType = move.promotion # piece type promoting to
+        array[locTo] = CustomPiece(chess.Piece(pieceType, board.turn),\
+                                   SOURCE_PIECES[chess.piece_symbol(pieceType)],\
+                                   array, locTo) # shiny new object
+        array[locTo].show_now()
+#+end_src
+A new key-frame is inserted initially as the piece that will promote has already
+been moved and that animation needs to finish before it can be hidden.
+
+Within the Blender view port the pieces that will be promoted too already exist
+at the right position, they are just not rendered until needed.
+** Animation
+*** Key frames
+To animate an object within blender two key-frames must be present with
+different values for some property. Blender will then interpolate between them
+(See [[*Interpolation][Python implementation - Interpolation]])
+
+Key-frames for all pieces are inserted every move. This is done to ensure
+stationary pieces stay stationary. Every move the piece has \(10\) frames to
+complete its moving animation. Between each move there a \(3\) buffer to provide
+some separation between moves.
+
+In addition to piece animations, the camera also rotates at a rate of
+\(2^{\circ}\) per \(13\) frames.
+#+begin_src python :exports code
+        FRAME_COUNT = 0
+        keyframes(array) # intial pos
+        FRAME_COUNT += 10
+        for move in game.mainline_moves():
+            scene.frame_set(FRAME_COUNT)
+
+            make_move(board, move, array)
+            keyframes(array) # update blender
+
+            camera_parent.rotation_euler[2] += radians(2) #XYZ
+            camera_parent.keyframe_insert(data_path="rotation_euler", index=-1)
+
+            board.push(move) # update python-chess
+
+            FRAME_COUNT += 10
+            keyframes(array) # update blender
+            FRAME_COUNT += 3
+#+end_src
+**** Timing
+*** Interpolation
 ** Reproducibility
 This project was created used
 - Blender ~2.92~
@@ -115,26 +458,102 @@ This project was created used
 - python-chess ~1.5.0~ [fn:1]
   [[https://github.com/niklasf/python-chess]]
 *** Python environment
-Blender is distributed with its own python installation for consistency,
-however this means that installed python modules are not present
+Blender is distributed with its own python installation for consistency, however
+this means that installed python modules are not present
 cite:blender-python-env. To mitigate this the ~--target~ flag for ~pip install~
 can be used to install directly to the blender python environment
 cite:pip-install-man.
 #+begin_src bash :exports code
 pip install -t ~/.config/blender/2.92/scripts/modules chess
 #+end_src
+This ensures Blenders ~Python~ will has access to the required librarys for this
+script to function.
 
 * Results
 * Evaluation
 
 \newpage
 * Appendix
-#  LocalWords:  Eevee Luxcore shaders
+#+name: class-sketch
+#+caption:~CustomPiece~ Initial sketch
+#+attr_latex: :width \textwidth
+[[file:Scratchpad.pdf]]
+
+#+name: class-src
+#+begin_src python :export code
+class CustomPiece():
+    def __init__(self, pieceType: chess.Piece, blender_obj: bpy.types.Object,\
+                 array: List[Optional[CustomPiece]], loc: int):
+        self._pieceType = pieceType.piece_type # int
+        self._colour = pieceType.color         # bool
+        self._blender_obj = blender_obj.copy()
+        self._array = array                    # reference to array containing self
+        self._inital_loc = loc
+        self._loc = loc                        # int (1d array index)
+
+        x, y = square_to_world_space(self._loc)
+        self._blender_obj.location = Vector((x, y, 0.3))
+
+        # set material based on colour
+        if self._colour:
+            self._mat = bpy.data.materials["White pieces"]
+        else:
+            self._mat = bpy.data.materials["Black pieces"]
+        self._blender_obj.active_material = self._mat
+
+
+        if self._colour and self._pieceType == chess.KNIGHT:
+            self._blender_obj.rotation_euler[2] = radians(180) #XYZ
+        # add object to collection so its visable
+        bpy.data.collections[['Black', 'White'][self._colour]].objects.link(self._blender_obj)
+
+    def move(self, new_loc: int, zTo: float = 0.3):
+        xTo, yTo = square_to_world_space(new_loc)
+        self._blender_obj.location = Vector((xTo, yTo, zTo))
+        print("Moved to ", self._blender_obj.location)
+
+        self._array[new_loc] = self
+        self._array[self._loc] = None
+
+        self._loc = new_loc
+
+    def die(self) -> CustomPiece:
+        self._array[self._loc] = None
+        self.keyframe_insert(data_path="location", frame=FRAME_COUNT-6)
+
+        xTo, yTo = square_to_world_space(self._loc)
+        self._blender_obj.location = Vector((xTo, yTo, 2.1))
+        self.keyframe_insert(data_path="location", frame=FRAME_COUNT+3)
+
+        if self._colour:
+            self._inital_loc += -16
+        else:
+            self._inital_loc += 16
+
+        xTo, yTo = square_to_world_space(self._inital_loc)
+        self._blender_obj.location = Vector((xTo, yTo, 2.1))
+        self.keyframe_insert(data_path="location", frame=FRAME_COUNT+21)
+
+        xTo, yTo = square_to_world_space(self._inital_loc)
+        self._blender_obj.location = Vector((xTo, yTo, 0.1))
+        self.keyframe_insert(data_path="location", frame=FRAME_COUNT+29)
+
+        return self
+#+end_src
+#+latex:\label{class-src}
+
 \newpage
 \printbibliography
 * Footnotes
-[fn:2] Blender comes bundled with this version. If the system python is used
-instead ensure it is above ~3.7~ for the ~__future__~ module.
+[fn:4]Note ~div~ here is integer division.
 
-[fn:1] This project requires the ~Outcome~ class released in ~1.5.0~
+[fn:3]Note that the ~Distrubution~ option Blender gives is different from the
+~Microfacet Distrubution Function~, and includes both the ~MDF~ and the
+Shadow-masking function.
+[fn:2]Blender comes bundled with this version. If the system python is used
+instead ensure it matches the version Blender was build with and is above ~3.7~ for the ~__future__~ module.
+[fn:1]This project requires the ~Outcome~ class released in ~1.5.0~
 
+
+#  LocalWords:  Eevee Luxcore shaders programmatically macrosurface BSDF shader
+#  LocalWords:  microsurface microfacet GGX microfacets

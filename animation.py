@@ -55,7 +55,6 @@ class CustomPiece():
 
     def die(self) -> CustomPiece:
         self._array[self._loc] = None
-        # TODO some animation here
         self.keyframe_insert(data_path="location", frame=FRAME_COUNT-6)
 
         xTo, yTo = square_to_world_space(self._loc)
@@ -66,6 +65,7 @@ class CustomPiece():
             self._inital_loc += -16
         else:
             self._inital_loc += 16
+
         xTo, yTo = square_to_world_space(self._inital_loc)
         self._blender_obj.location = Vector((xTo, yTo, 2.1))
         self.keyframe_insert(data_path="location", frame=FRAME_COUNT+21)
@@ -120,8 +120,8 @@ def make_move(board: chess.Board, move: chess.Move, array: List[Optional[CustomP
             else: # its a capture,
                 captured_piece = array[locTo].die() # TODO, do something with this
 
+    array[locFrom].move(locTo) # NOTE, piece moves always
     if move.promotion is not None:
-        array[locFrom].move(locTo) # NOTE, piece moves always
         array[locTo].keyframe_insert(data_path="location", index=-1)
         array[locTo].hide_now()
         # unlink somehow
@@ -131,9 +131,6 @@ def make_move(board: chess.Board, move: chess.Move, array: List[Optional[CustomP
                                    array, locTo)
         array[locTo].show_now()
 
-
-    else:
-        array[locFrom].move(locTo) # NOTE, piece moves always
 
 def main(filename) -> Optional[chess.pgn.Game]:
     with open(filename) as pgn:
@@ -163,8 +160,6 @@ def main(filename) -> Optional[chess.pgn.Game]:
             scene.frame_set(FRAME_COUNT)
 
             make_move(board, move, array)
-
-
             keyframes(array) # update blender
 
             camera_parent.rotation_euler[2] += radians(2) #XYZ
