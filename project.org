@@ -266,7 +266,7 @@ A sample render can be seen below.
 **** Thank you to Jack
 Due to significant hardware limitations for ray-tracing (~GTX 760, i5-4670~), a
 favour was called in with a good friend, Jack kindly lent their ~RTX 2070~  for a
-cycles render. See [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble_cycles.mp4][master/Videos/Marble_cycles.mp4]].
+cycles render. See [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble_cycles.mp4][master/Videos/Marble\under{}cycles.mp4]].
 *** Luxcore
 *** Tragedy - 22:20, 01/June/2021
 At 10:20pm on the first of June the PC that had been enslaved to rendering a
@@ -274,7 +274,9 @@ Luxcore for more than 96 hours straight, died. It had been a good 8 years, but
 she finally gave out. Official cause of death is unknown but it suspected to be
 something to do with power delivery.
 
-A successful data recovery was conducted the next morning.
+A successful data recovery was conducted the next morning. Only the last 12
+frames were missing, they were rendered on another device. See
+[[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/disco_luxcore.mp4][master/Videos/disco\under{}luxcore.mp4 ]]
 * Python implementation
 ** Processing games
 Reading and stepping through games is handled almost entirely by the chess
