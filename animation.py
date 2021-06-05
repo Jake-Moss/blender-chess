@@ -151,7 +151,7 @@ def main(filename) -> Optional[chess.pgn.Game]:
                                               , array, position)
 
         camera_parent = bpy.data.collections["Collection"].objects['Camera parent']
-
+        
         global FRAME_COUNT
         FRAME_COUNT = 0
         keyframes(array) # intial pos
@@ -172,7 +172,6 @@ def main(filename) -> Optional[chess.pgn.Game]:
             FRAME_COUNT += 3
 
         confetti = bpy.data.collections["Board"].objects['Confetti source']
-        print(board.outcome())
         if board.outcome() is not None:
             winner = board.outcome().winner
             king_square = board.king(winner)

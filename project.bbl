@@ -213,6 +213,32 @@
       \verb https://graphics.pixar.com/library/ApproxBSSRDF/
       \endverb
     \endentry
+    \entry{blender-source}{online}{}
+      \name{author}{1}{}{%
+        {{hash=a29269cd0ed866f49fb43cad82231f1e}{%
+           family={contributors},
+           familyi={c\bibinitperiod},
+           given={Multiple},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{a29269cd0ed866f49fb43cad82231f1e}
+      \strng{fullhash}{a29269cd0ed866f49fb43cad82231f1e}
+      \strng{bibnamehash}{a29269cd0ed866f49fb43cad82231f1e}
+      \strng{authorbibnamehash}{a29269cd0ed866f49fb43cad82231f1e}
+      \strng{authornamehash}{a29269cd0ed866f49fb43cad82231f1e}
+      \strng{authorfullhash}{a29269cd0ed866f49fb43cad82231f1e}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Blender source code, curve.c}
+      \verb{urlraw}
+      \verb https://developer.blender.org/diffusion/B/browse/master/source/blender/blenkernel/intern/curve.c;7c9b1065895e0a6a12555075980d7a77d1dea8c7$1362
+      \endverb
+      \verb{url}
+      \verb https://developer.blender.org/diffusion/B/browse/master/source/blender/blenkernel/intern/curve.c;7c9b1065895e0a6a12555075980d7a77d1dea8c7$1362
+      \endverb
+    \endentry
     \entry{blender-python-env}{online}{}
       \name{author}{1}{}{%
         {{hash=44275c392a37e9fa9de37082ab548a59}{%

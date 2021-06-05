@@ -183,7 +183,7 @@ To model the knight, 3 separate reference images where used. The base was
 constructed in a similar manner to the other pieces. The head was modelled
 manually (read painstakingly).
 
-#+latex: \begin{figure}
+#+latex: \begin{figure}[htbp]
 #+begin_center
 #+attr_org: :width 200
 #+attr_latex: :width 0.3\textwidth :center nil
@@ -223,7 +223,39 @@ in [[*Array index to world space][Python implementation - Array index to world s
 **** Marble exterior
 ** Particle effects
 *** Explosions
+Initially an explosion was planned an each piece capture as a way to add some
+flare. However this was quickly scrapped as the baking and rendering time costs
+were deemed obscene. A demo render was created and can be viewed here TODO FIX
+THIS
 *** Confetti
+As an alternative to explosions, a confetti shower on the winning king (only
+checkmates deserve confetti) was added instead.
+
+The confetti is still an explosion, however the outgoing particles are set to a
+collection of "confetties". The source of the explosion is a upwards facing
+dome, this gives the confetti a nice even spread. The particles are set to have
+randomised, size, rotation, angular velocity, normal velocity. To achieve the
+slow fall effect the effective gravity of the particle simulation was lowered to
+38% its normal strength. Each confetti has a texture with ~Roughness 1.0~ and
+varying base colours.
+
+#+latex: \begin{figure}[htbp]
+#+begin_center
+#+attr_org: :width 200
+#+attr_latex: :width 0.5\textwidth :center nil
+[[file:Images/confetties.png]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:Images/confetti dome.png]]
+#+end_center
+#+latex: \caption{Confetties (left), confetti source (right)}
+#+latex: \end{figure}
+
+A sample render can be seen below.
+#+caption: Confetti render using Cycles
+#+attr_org: :width 200
+#+attr_latex: :width \textwidth
+[[file:Images/Confetti! cycles.png]]
 ** Lighting
 *** Direct
 *** Indirect
@@ -237,10 +269,10 @@ favour was called in with a good friend, Jack kindly lent their ~RTX 2070~  for 
 cycles render. See [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble_cycles.mp4][master/Videos/Marble_cycles.mp4]].
 *** Luxcore
 *** Tragedy - 22:20, 01/June/2021
-At 10:20pm on the first of June the PC that had been enslaved to rendering for
-more than 96 hours straight, died. It had been a good 8 years, but she finally
-gave out. Official cause of death is unknown but it suspected to be something to
-do with power delivery.
+At 10:20pm on the first of June the PC that had been enslaved to rendering a
+Luxcore for more than 96 hours straight, died. It had been a good 8 years, but
+she finally gave out. Official cause of death is unknown but it suspected to be
+something to do with power delivery.
 
 A successful data recovery was conducted the next morning.
 * Python implementation
@@ -417,9 +449,10 @@ Within the Blender view port the pieces that will be promoted too already exist
 at the right position, they are just not rendered until needed.
 ** Animation
 *** Key frames
-To animate an object within blender two key-frames must be present with
-different values for some property. Blender will then interpolate between them
-(See [[*Interpolation][Python implementation - Interpolation]])
+To animate an object within blender two key-frames must be inserted with
+different values for some property at varying times. Blender will then
+interpolate between them (See [[*Interpolation][Python implementation - Interpolation]] for
+interpolation methods)
 
 Key-frames for all pieces are inserted every move. This is done to ensure
 stationary pieces stay stationary. Every move the piece has \(10\) frames to
@@ -447,8 +480,55 @@ In addition to piece animations, the camera also rotates at a rate of
             keyframes(array) # update blender
             FRAME_COUNT += 3
 #+end_src
-**** Timing
+
+While the camera's rotation is tired to the length of the game, in order to
+continue spinning while the remaining animations (confetti and captures) finish additional key frames
+are added. Confetti is conditionally added to the winning king. No confetti for a draw.
+#+begin_src python :exports code
+        confetti = bpy.data.collections["Board"].objects['Confetti source']
+        if board.outcome() is not None:
+            winner = board.outcome().winner
+            king_square = board.king(winner)
+            xTo, yTo = square_to_world_space(king_square)
+            confetti.location = Vector((xTo, yTo, 3))
+            bpy.data.particles["Confetti"].frame_start = FRAME_COUNT
+            bpy.data.particles["Confetti"].frame_end = FRAME_COUNT + 12
+
+        print(FRAME_COUNT)
+        for _ in range(5):
+            scene.frame_set(FRAME_COUNT)
+            camera_parent.rotation_euler[2] += radians(2) #XYZ
+            camera_parent.keyframe_insert(data_path="rotation_euler", index=-1)
+
+            FRAME_COUNT += 13
+#+end_src
+In order to move the camera with a fixed rotation and radius from the centre of
+the board the camera was made a child of a ~Empty Plain Axis~. Rotations and
+translations applied to the camera parent are also applied to the camera. This
+allows for ease fixed distance rotations.
+#+name: camera-parent
+#+caption: Camera parent axis
+#+attr_org: :width 200
+#+attr_latex: :width 0.5\textwidth
+[[file:Images/camera parent.png]]
 *** Interpolation
+Blender offers 3 curves for interpolation between key-frames.
++ Constant\\
+  Object value only objects on the last possible frame.
++ Linear\\
+  Object value has a changes linear between the key-frames to form piecewise
+  continuous curve.
++ Bézier\\
+  The object value is interpolated using a Bézier curve. Bézier curves are
+  parametric curves used in computer graphics to create smooth surfaces, or in
+  this case, a smooth function between two points.
+
+  Blender implements a forward differencing method for a cubic Bézier curve
+  evident from the source code cite:blender-source.
+By default Blender uses Bézier curve interpolation for all motions. This is the
+preferred option for piece movement. However, linear was opted for the camera
+motion although a cubic Bézier curve would produce the same outcome as it made
+debugging slightly easier.
 ** Reproducibility
 This project was created used
 - Blender ~2.92~
@@ -466,7 +546,7 @@ cite:pip-install-man.
 #+begin_src bash :exports code
 pip install -t ~/.config/blender/2.92/scripts/modules chess
 #+end_src
-This ensures Blenders ~Python~ will has access to the required librarys for this
+This ensures Blenders ~Python~ will has access to the required libraries for this
 script to function.
 
 * Results
@@ -550,10 +630,13 @@ class CustomPiece():
 [fn:3]Note that the ~Distrubution~ option Blender gives is different from the
 ~Microfacet Distrubution Function~, and includes both the ~MDF~ and the
 Shadow-masking function.
+
 [fn:2]Blender comes bundled with this version. If the system python is used
-instead ensure it matches the version Blender was build with and is above ~3.7~ for the ~__future__~ module.
+instead ensure it matches the version Blender was built with and is above ~3.7~
+for the ~__future__~ module. Past ~3.10~ the ~__future__~ module is no longer required.
+
 [fn:1]This project requires the ~Outcome~ class released in ~1.5.0~
 
 
 #  LocalWords:  Eevee Luxcore shaders programmatically macrosurface BSDF shader
-#  LocalWords:  microsurface microfacet GGX microfacets
+#  LocalWords:  microsurface microfacet GGX microfacets Bézier
