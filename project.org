@@ -224,16 +224,16 @@ in [[*Array index to world space][Python implementation - Array index to world s
 ** Particle effects
 *** Explosions
 Initially an explosion was planned an each piece capture as a way to add some
-flare. However this was quickly scrapped as the baking and rendering time costs
-were deemed obscene. A demo render was created and can be viewed here TODO FIX
-THIS
+flare. However this was quickly scrapped as the additional baking and rendering time
+were deemed obscene. A demo render featuring a smoke cloud was created and can
+be viewed here [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/smoke.mp4][master/Videos/smoke.mp4]].
 *** Confetti
 As an alternative to explosions, a confetti shower on the winning king (only
 checkmates deserve confetti) was added instead.
 
-The confetti is still an explosion, however the outgoing particles are set to a
+The confetti is still an explosion but with the outgoing particles are set to a
 collection of "confetties". The source of the explosion is a upwards facing
-dome, this gives the confetti a nice even spread. The particles are set to have
+dome, this gives the confetti a even spread. The particles are set to have
 randomised, size, rotation, angular velocity, normal velocity. To achieve the
 slow fall effect the effective gravity of the particle simulation was lowered to
 38% its normal strength. Each confetti has a texture with ~Roughness 1.0~ and
@@ -257,22 +257,129 @@ A sample render can be seen below.
 #+attr_latex: :width \textwidth
 [[file:Images/Confetti! cycles.png]]
 ** Lighting
+The power of Blender lights is measured in ~Watts~, however this is not the same
+wattage that consumer lights bulbs are rated in. Blenders light power is rater
+in radiant flux, which is the measure of radiant energy emitted per unit time
+apposed to consumer light bulb which are rated in lumens, or luminous flux
+cite:radiant-flux,luminous-flux. Luminous flux differs from radiant flux in that
+luminous flux is adjusted to the varying sensitivity of the human eye.
+cite:luminous-flux
+
+#+caption: Blender light power conversion [[https://docs.blender.org/manual/en/latest/render/lights/light_object.html#power-of-lights][(Source)]]
+|--------------------------+---------+------------------------|
+| *Real world light*       | *Power* | *Suggested Light Type* |
+|--------------------------+---------+------------------------|
+| Candle                   | 0.05 W  | Point                  |
+|--------------------------+---------+------------------------|
+| 800 lm LED bulb          | 2.1 W   | Point                  |
+|--------------------------+---------+------------------------|
+| 1000 lm light bulb       | 2.9 W   | Point                  |
+|--------------------------+---------+------------------------|
+| 1500 lm PAR38 floodlight | 4 W     | Area, Disk             |
+|--------------------------+---------+------------------------|
+| 2500 lm fluorescent tube | 4.5 W   | Area, Rectangle        |
+|--------------------------+---------+------------------------|
+| 5000 lm car headlight    | 22 W    | Spot, size 125 degrees |
+|--------------------------+---------+------------------------|
+
 *** Direct
+To directly light the scene four spot lights placed at the corners of the board
+were used. Spot lights were chosen instead of typical points lights or sun
+lights to give consistent directional lighting during the camera spins. The four
+lights are set to track the centre of the chess board.
+#+caption: Spot light positions
+#+attr_org: :width 200
+#+attr_latex: :width \textwidth
+[[file:Images/lighting.png]]
+To account for the unrealistic scale the power of the lights was set to higher
+than normal. However, this was still not enough. To avoid cranking the lights
+to approximately ~1MW~ the exposure within the film settings was adjusted to
+compensate as per the Blender documentation cite:light-power-docs.
+
+The blend for this light was set to 0 as the cone fully encompasses the board.
 *** Indirect
-*** Disco ball
+There is minimal indirect lighting within the final scene (all models
+reflect some amount of light due to their texturing, however this is not a
+significant amount). Considering this a second scene was created which featured
+considerable indirect lighting. To accomplish this a disco ball was implemented.
+**** Disco ball
+Whats better than chess? That's right, disco chess! There is no better way to
+demonstrate indirect lighting that a giant ball of mirrors in the middle of the board.
+
+The disco ball model is a simple iso-sphere with a mirror like texture. Its
+rotation is achieved through simple key-frames.
+
+To create a mirror in Blender the ~Roughness~ parameter on the ~Principled BSDF~
+shader node is set to 0. This alone didn't make a very convincing disco ball, in
+addition to the ~Roughness~, the following values were tweaked,
+- ~Metalic 1.0~\\
+  This change made the ball most disco like as it gives a fully specular
+  reflection tined with the base colour without diffuse reflection or
+  transmission.
+- ~Specular 1.0~\\
+  While the ~Matallic~ value is responsible for the majority of the specular
+  reflection, this change gave the ball a halo like glow.
+- ~Base colour~\\
+  With the two previous changes the disco ball appears too uniform and reflective, some
+  faces appear completely blown out with no variance between them. To remedy
+  this a ~Voronoi~ noise texture's colour output was piped into a colour ramp
+  (this is done to avoid the *very* pink look  the ~Voronoi~ noise produces).
+
+#+caption: ~Voronoi~ texture colour output
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth
+[[file:Images/render_shader-nodes_textures_voronoi_smoothness-color-zero.png]]
+A ~Voronoi~ noise texture is as procedural [[https://en.wikipedia.org/wiki/Worley_noise][Worley noise]] function evaluated at the texture
+coordinate. The patterns are generate by randomly distributing points. From
+these points a region is extended, the bounds of this region is determined by
+some distance metric. The standard Euclidean distance is used here.
+
+#+latex: \begin{figure}[htbp]
+#+begin_center
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:Images/Purple.png]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:Images/discoclose.png]]
+#+end_center
+#+latex: \caption{No colour ramp (left), complete texture (right)}
+#+latex: \end{figure}
+
+#+caption: Complete disco ball texture
+#+attr_latex: :width 0.7\textwidth
+[[file:Images/discoball_texture.png]]
+\newpage
 ** Render engine
+Blender offers two modern rendering engines, when working on a project it is
+important to keep in mind what engine is desired as to keep in mind the
+limitations of both. For this project ~Eevee~ was the chosen engine due to the
+significantly lower render times than ~Cycles~, however renders using both
+engines were still made in order to compare them.\\
+
+This project also made use of third engine, ~Luxcore~. [[https://luxcorerender.org/][~Luxcore~]] is a free and
+open source rendering engine designed specifically to model physically accurate
+light transportation.
 *** Eevee
 *** Cycles
+~Cycles~ is a physically based rendering engine
+- backwards path tracer
 **** Thank you to Jack
 Due to significant hardware limitations for ray-tracing (~GTX 760, i5-4670~), a
 favour was called in with a good friend, Jack kindly lent their ~RTX 2070~  for a
 cycles render. See [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble_cycles.mp4][master/Videos/Marble\under{}cycles.mp4]].
 *** Luxcore
+Due to the limitations of ~Eevee~ and ~Cycles~, specifically the lack of
+bidirectional path tracing, the ~Luxcore~ rendering engine was chosen to render
+disco chess.\\
+
+
+Bidirectional path tracing
 *** Tragedy - 22:20, 01/June/2021
 At 10:20pm on the first of June the PC that had been enslaved to rendering a
 Luxcore for more than 96 hours straight, died. It had been a good 8 years, but
 she finally gave out. Official cause of death is unknown but it suspected to be
-something to do with power delivery.
+something to do with power delivery.\\
 
 A successful data recovery was conducted the next morning. Only the last 12
 frames were missing, they were rendered on another device. See

@@ -213,6 +213,91 @@
       \verb https://graphics.pixar.com/library/ApproxBSSRDF/
       \endverb
     \endentry
+    \entry{radiant-flux}{online}{}
+      \name{author}{1}{}{%
+        {{hash=cc1da248d502393305061bd008ddc033}{%
+           family={Foundation},
+           familyi={F\bibinitperiod},
+           given={Wikipedia},
+           giveni={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{cc1da248d502393305061bd008ddc033}
+      \strng{fullhash}{cc1da248d502393305061bd008ddc033}
+      \strng{bibnamehash}{cc1da248d502393305061bd008ddc033}
+      \strng{authorbibnamehash}{cc1da248d502393305061bd008ddc033}
+      \strng{authornamehash}{cc1da248d502393305061bd008ddc033}
+      \strng{authorfullhash}{cc1da248d502393305061bd008ddc033}
+      \field{extraname}{2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Radiant flux}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Radiant_flux
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Radiant_flux
+      \endverb
+    \endentry
+    \entry{luminous-flux}{online}{}
+      \name{author}{1}{}{%
+        {{hash=cc1da248d502393305061bd008ddc033}{%
+           family={Foundation},
+           familyi={F\bibinitperiod},
+           given={Wikipedia},
+           giveni={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{cc1da248d502393305061bd008ddc033}
+      \strng{fullhash}{cc1da248d502393305061bd008ddc033}
+      \strng{bibnamehash}{cc1da248d502393305061bd008ddc033}
+      \strng{authorbibnamehash}{cc1da248d502393305061bd008ddc033}
+      \strng{authornamehash}{cc1da248d502393305061bd008ddc033}
+      \strng{authorfullhash}{cc1da248d502393305061bd008ddc033}
+      \field{extraname}{3}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Luminous flux}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Luminous_flux
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Luminous_flux
+      \endverb
+    \endentry
+    \entry{light-power-docs}{online}{}
+      \name{author}{1}{}{%
+        {{hash=44275c392a37e9fa9de37082ab548a59}{%
+           family={Foundation},
+           familyi={F\bibinitperiod},
+           given={Blender},
+           giveni={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{44275c392a37e9fa9de37082ab548a59}
+      \strng{fullhash}{44275c392a37e9fa9de37082ab548a59}
+      \strng{bibnamehash}{44275c392a37e9fa9de37082ab548a59}
+      \strng{authorbibnamehash}{44275c392a37e9fa9de37082ab548a59}
+      \strng{authornamehash}{44275c392a37e9fa9de37082ab548a59}
+      \strng{authorfullhash}{44275c392a37e9fa9de37082ab548a59}
+      \field{extraname}{4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{day}{6}
+      \field{month}{6}
+      \field{title}{Light Objects - Power of Lights - Blender documentation}
+      \field{year}{2020}
+      \field{dateera}{ce}
+      \verb{urlraw}
+      \verb https://docs.blender.org/manual/en/latest/render/lights/light_object.html#power-of-lights
+      \endverb
+      \verb{url}
+      \verb https://docs.blender.org/manual/en/latest/render/lights/light_object.html#power-of-lights
+      \endverb
+    \endentry
     \entry{blender-source}{online}{}
       \name{author}{1}{}{%
         {{hash=a29269cd0ed866f49fb43cad82231f1e}{%
@@ -233,10 +318,10 @@
       \field{labeltitlesource}{title}
       \field{title}{Blender source code, curve.c}
       \verb{urlraw}
-      \verb https://developer.blender.org/diffusion/B/browse/master/source/blender/blenkernel/intern/curve.c;7c9b1065895e0a6a12555075980d7a77d1dea8c7$1362
+      \verb https://developer.blender.org/diffusion/B/browse/master/source/blender/blenkernel/intern/curve.c;7c9b1065895e0a6a12555075980d7a77d1dea8c7\$1362
       \endverb
       \verb{url}
-      \verb https://developer.blender.org/diffusion/B/browse/master/source/blender/blenkernel/intern/curve.c;7c9b1065895e0a6a12555075980d7a77d1dea8c7$1362
+      \verb https://developer.blender.org/diffusion/B/browse/master/source/blender/blenkernel/intern/curve.c;7c9b1065895e0a6a12555075980d7a77d1dea8c7%5C$1362
       \endverb
     \endentry
     \entry{blender-python-env}{online}{}
@@ -253,7 +338,7 @@
       \strng{authorbibnamehash}{44275c392a37e9fa9de37082ab548a59}
       \strng{authornamehash}{44275c392a37e9fa9de37082ab548a59}
       \strng{authorfullhash}{44275c392a37e9fa9de37082ab548a59}
-      \field{extraname}{2}
+      \field{extraname}{5}
       \field{sortinit}{1}
       \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}

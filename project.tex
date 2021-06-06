@@ -1,4 +1,4 @@
-% Created 2021-06-06 Sun 00:54
+% Created 2021-06-07 Mon 02:07
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -23,7 +23,7 @@
 \titlespacing*{\paragraph}
 {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
-% features: (embed-files embed-tangled acronym underline par-sep image float-wrap engraved-code-setup engraved-code)
+% features: (embed-files embed-tangled acronym underline par-sep image table float-wrap engraved-code-setup engraved-code)
 
   \usepackage[main,include]{embedall}
   \IfFileExists{./\jobname.org}{\embedfile[desc=The original file]{\jobname.org}}{}
@@ -36,6 +36,8 @@
 \setlength{\parindent}{0pt}
 
 \usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{booktabs}
 \usepackage{wrapfig}
 
   \usepackage{fvextra}
@@ -139,9 +141,9 @@
 \newpage
 
 \section{Introduction}
-\label{sec:orgeb540e2}
+\label{sec:org9769d03}
 \subsection{Project aims}
-\label{sec:org8c9b236}
+\label{sec:org427aac2}
 This project aims to demonstrate a sufficient knowledge of computer graphics
 techniques and implementations through the creation of a visually appealing
 chess game animation tool. This was accomplished using Blender, and its python
@@ -164,19 +166,19 @@ for chess games) parsing. This library is designed to be able to function as
 back-end, making it perfect to use in conjunction with Blender.
 \end{itemize}
 \section{The plan}
-\label{sec:org18ad456}
+\label{sec:orgb5bf79e}
 During the proposal the plan was to create an interactive, real time chess
 board, however this was changed as the techniques and concepts would be severely
 limited. Blender with python scripting was a perfect compromise.
 \section{Blender implementation}
-\label{sec:org30482dc}
+\label{sec:orga0e9784}
 \subsection{Modelling, textures, and shading}
-\label{sec:org6f96ff1}
+\label{sec:org4bc1111}
 The scaling of the models was deliberately chosen to be unrealistic in order to
-simplify the translation from position with the back to front end (See \hyperref[sec:org789c6c4]{Python
+simplify the translation from position with the back to front end (See \hyperref[sec:org027462f]{Python
 side - Array index to world space})
 \subsubsection{Nodes}
-\label{sec:orga47842b}
+\label{sec:org3f8da68}
 Blender nodes allow for the creation of textures and shaders through a pipeline
 of simple operations to create complex procedural results. Its simple to
 understand visual workflow is a popular alternative to layer based compositing.
@@ -193,12 +195,12 @@ values on the respective node.
 and resolution.
 \end{itemize}
 \subsubsection{Shaders}
-\label{sec:org3b0d7af}
+\label{sec:org572c041}
 A shader is a program, typically run on the GPU, to computer the colour of a
 group or individual pixel. These shaders describe the lighting interactions of
 objects or surfaces, such as reflection, refractions, and absorption.
 \paragraph{Principled BSDF}
-\label{sec:orge816ad1}
+\label{sec:org007dd07}
 A \texttt{BSDF} (Bidirectional Scattering Distribution Function) describes how light
 scatters on a surface. In computer graphics, computing a highly detailed
 microsurface is not feasible, instead it is replaced with a simplified
@@ -290,7 +292,7 @@ on the surface and inside a material.
 
 
 \subsubsection{Pieces}
-\label{sec:orgd2bb58b}
+\label{sec:org677da4b}
 Pieces were modelled after the reference image below Figure \ref{piece-reference}.
 From this image the pieces where traced using the \texttt{Add Vertex} tool, from the
 \href{https://docs.blender.org/manual/en/2.92/addons/add\_mesh/mesh\_extra\_objects.html}{Add Mess Extra Objects} add-on. To transform this line of vertices to a solid
@@ -309,7 +311,7 @@ object  a \texttt{Screw} modifier was applied.
 The notable changes from the default settings is the lowering of the steps from
 \(16 \to 10\) and disabling \texttt{Smooth Shading}. This was a stylistic choice as it
 was believed that the low polygon look would better demonstration reflections and
-the planned indirect lighting (See \hyperref[sec:org3e00aea]{Lighting - Disco Ball}).
+the planned indirect lighting (See \hyperref[sec:orge3aaeaa]{Lighting - Disco Ball}).
 
 To model the knight, 3 separate reference images where used. The base was
 constructed in a similar manner to the other pieces. The head was modelled
@@ -330,9 +332,9 @@ The finally piece models appear as below.
 \includegraphics[width=0.5\textwidth]{Images/Pieces.png}
 \end{center}
 \subsubsection{Board}
-\label{sec:org6201923}
+\label{sec:orgf37f553}
 \paragraph{Chess board}
-\label{sec:orgba182e4}
+\label{sec:orge86d637}
 The chess board model is a simple rectangular based prism with dimensions \texttt{8m x
 8m x 0.4m}. The checker board texture comes from the \texttt{Checker Texture}, with
 \texttt{scale=8.0} and black and white colours. This texture output is then feed into
@@ -347,25 +349,25 @@ the base colour input of a \texttt{Principled BSDF} shader node.
 Within world space the board was positioned in the positive, positive quadrant
 such that the very bottom left handle corner of the board was at \texttt{0,0}
 with each squares dimensions as \texttt{1m x 1mx}. This positioning becomes important
-in \hyperref[sec:org789c6c4]{Python implementation - Array index to world space}.
+in \hyperref[sec:org027462f]{Python implementation - Array index to world space}.
 \paragraph{Marble exterior}
-\label{sec:org973e6ac}
+\label{sec:orgb33ccbc}
 \subsection{Particle effects}
-\label{sec:orgfe36209}
+\label{sec:org67c532d}
 \subsubsection{Explosions}
-\label{sec:orgac09548}
+\label{sec:org3dceace}
 Initially an explosion was planned an each piece capture as a way to add some
-flare. However this was quickly scrapped as the baking and rendering time costs
-were deemed obscene. A demo render was created and can be viewed here TODO FIX
-THIS
+flare. However this was quickly scrapped as the additional baking and rendering time
+were deemed obscene. A demo render featuring a smoke cloud was created and can
+be viewed here \href{https://github.com/Jake-Moss/blender-chess/blob/master/Videos/smoke.mp4}{master/Videos/smoke.mp4}.
 \subsubsection{Confetti}
-\label{sec:orga7f18d5}
+\label{sec:orga3868c4}
 As an alternative to explosions, a confetti shower on the winning king (only
 checkmates deserve confetti) was added instead.
 
-The confetti is still an explosion, however the outgoing particles are set to a
+The confetti is still an explosion but with the outgoing particles are set to a
 collection of ``confetties''. The source of the explosion is a upwards facing
-dome, this gives the confetti a nice even spread. The particles are set to have
+dome, this gives the confetti a even spread. The particles are set to have
 randomised, size, rotation, angular velocity, normal velocity. To achieve the
 slow fall effect the effective gravity of the particle simulation was lowered to
 38\% its normal strength. Each confetti has a texture with \texttt{Roughness 1.0} and
@@ -386,28 +388,134 @@ A sample render can be seen below.
 \caption{Confetti render using Cycles}
 \end{figure}
 \subsection{Lighting}
-\label{sec:org6468a44}
+\label{sec:orgc3b815b}
+The power of Blender lights is measured in \texttt{Watts}, however this is not the same
+wattage that consumer lights bulbs are rated in. Blenders light power is rater
+in radiant flux, which is the measure of radiant energy emitted per unit time
+apposed to consumer light bulb which are rated in lumens, or luminous flux
+\cite{radiant-flux,luminous-flux}. Luminous flux differs from radiant flux in that
+luminous flux is adjusted to the varying sensitivity of the human eye.
+\cite{luminous-flux}
+
+\begin{table}[htbp]
+\caption{Blender light power conversion \href{https://docs.blender.org/manual/en/latest/render/lights/light\_object.html\#power-of-lights}{(Source)}}
+\centering
+\begin{tabular}{lll}
+\hline
+\textbf{Real world light} & \textbf{Power} & \textbf{Suggested Light Type}\\
+\hline
+Candle & 0.05 W & Point\\
+\hline
+800 lm LED bulb & 2.1 W & Point\\
+\hline
+1000 lm light bulb & 2.9 W & Point\\
+\hline
+1500 lm PAR38 floodlight & 4 W & Area, Disk\\
+\hline
+2500 lm fluorescent tube & 4.5 W & Area, Rectangle\\
+\hline
+5000 lm car headlight & 22 W & Spot, size 125 degrees\\
+\hline
+\end{tabular}
+\end{table}
+
 \subsubsection{Direct}
-\label{sec:orgbba6fbd}
+\label{sec:org254eacb}
+To directly light the scene four spot lights placed at the corners of the board
+were used. Spot lights were chosen instead of typical points lights or sun
+lights to give consistent directional lighting during the camera spins. The four
+lights are set to track the centre of the chess board.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{Images/lighting.png}
+\caption{Spot light positions}
+\end{figure}
+To account for the unrealistic scale the power of the lights was set to higher
+than normal. However, this was still not enough. To avoid cranking the lights
+to approximately \texttt{1MW} the exposure within the film settings was adjusted to
+compensate as per the Blender documentation \cite{light-power-docs}.
+
+The blend for this light was set to 0 as the cone fully encompasses the board.
 \subsubsection{Indirect}
-\label{sec:org190985b}
-\subsubsection{Disco ball}
-\label{sec:org3e00aea}
+\label{sec:orgac5b862}
+There is minimal indirect lighting within the final scene (all models
+reflect some amount of light due to their texturing, however this is not a
+significant amount). Considering this a second scene was created which featured
+considerable indirect lighting. To accomplish this a disco ball was implemented.
+\paragraph{Disco ball}
+\label{sec:orge3aaeaa}
+Whats better than chess? That's right, disco chess! There is no better way to
+demonstrate indirect lighting that a giant ball of mirrors in the middle of the board.
+
+The disco ball model is a simple iso-sphere with a mirror like texture. Its
+rotation is achieved through simple key-frames.
+
+To create a mirror in Blender the \texttt{Roughness} parameter on the \texttt{Principled BSDF}
+shader node is set to 0. This alone didn't make a very convincing disco ball, in
+addition to the \texttt{Roughness}, the following values were tweaked,
+\begin{itemize}
+\item \texttt{Metalic 1.0}\\
+This change made the ball most disco like as it gives a fully specular
+reflection tined with the base colour without diffuse reflection or
+transmission.
+\item \texttt{Specular 1.0}\\
+While the \texttt{Matallic} value is responsible for the majority of the specular
+reflection, this change gave the ball a halo like glow.
+\item \texttt{Base colour}\\
+With the two previous changes the disco ball appears too uniform and reflective, some
+faces appear completely blown out with no variance between them. To remedy
+this a \texttt{Voronoi} noise texture's colour output was piped into a colour ramp
+(this is done to avoid the \textbf{very} pink look  the \texttt{Voronoi} noise produces).
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.3\textwidth]{Images/render_shader-nodes_textures_voronoi_smoothness-color-zero.png}
+\caption{\texttt{Voronoi} texture colour output}
+\end{figure}
+A \texttt{Voronoi} noise texture is as procedural \href{https://en.wikipedia.org/wiki/Worley\_noise}{Worley noise} function evaluated at the texture
+coordinate. The patterns are generate by randomly distributing points. From
+these points a region is extended, the bounds of this region is determined by
+some distance metric. The standard Euclidean distance is used here.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.3\textwidth]{Images/Purple.png}
+\includegraphics[width=0.3\textwidth]{Images/discoclose.png}
+\end{center}
+\caption{No colour ramp (left), complete texture (right)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{Images/discoball_texture.png}
+\caption{Complete disco ball texture}
+\end{figure}
+\newpage
 \subsection{Render engine}
-\label{sec:orgf5baf58}
+\label{sec:orga5962b9}
+Blender offers two modern rendering engines, when working on a project it is
+important to keep in mind what engine is desired as to keep in mind the
+limitations of both. For this project \texttt{Eevee} was the chosen engine due to the
+significantly lower render times than \texttt{Cycles}, however renders using both
+engines were still made in order to compare them.\\
+
+This project also made use of third engine, \texttt{Luxcore}. \href{https://luxcorerender.org/}{\texttt{Luxcore}} is a free and
+open source rendering engine designed specifically to model physically accurate
+light transportation.
 \subsubsection{Eevee}
-\label{sec:org57300c3}
+\label{sec:org7ca2b45}
 \subsubsection{Cycles}
-\label{sec:orgbe5d7ea}
+\label{sec:orgcf16a82}
 \paragraph{Thank you to Jack}
-\label{sec:orga6da89f}
+\label{sec:orgaa222c4}
 Due to significant hardware limitations for ray-tracing (\texttt{GTX 760, i5-4670}), a
 favour was called in with a good friend, Jack kindly lent their \texttt{RTX 2070}  for a
 cycles render. See \href{https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble\_cycles.mp4}{master/Videos/Marble\_cycles.mp4}.
 \subsubsection{Luxcore}
-\label{sec:org2bf891a}
+\label{sec:org0aa2b85}
 \subsubsection{Tragedy - 22:20, 01/June/2021}
-\label{sec:org18a09d9}
+\label{sec:org680e65a}
 At 10:20pm on the first of June the PC that had been enslaved to rendering a
 Luxcore for more than 96 hours straight, died. It had been a good 8 years, but
 she finally gave out. Official cause of death is unknown but it suspected to be
@@ -417,9 +525,9 @@ A successful data recovery was conducted the next morning. Only the last 12
 frames were missing, they were rendered on another device. See
 \href{https://github.com/Jake-Moss/blender-chess/blob/master/Videos/disco\_luxcore.mp4}{master/Videos/disco\_luxcore.mp4 }
 \section{Python implementation}
-\label{sec:orgd46f993}
+\label{sec:org9311fbe}
 \subsection{Processing games}
-\label{sec:org8e86f52}
+\label{sec:org2e6599b}
 Reading and stepping through games is handled almost entirely by the chess
 library. No special considerations need to be made here. The minium working
 example below demonstrates all that is necessary to step through an entire game.
@@ -436,7 +544,7 @@ example below demonstrates all that is necessary to step through an entire game.
 \end{Verbatim}
 \end{Code}
 \subsection{Pairing problem}
-\label{sec:orgc1a7183}
+\label{sec:org3aaa754}
 During a game of chess there is nothing in between moves, simply one discrete
 board state after another. This is also how the chess library makes moves, by
 computing differences and tracking board states, while this is reliable and
@@ -448,14 +556,14 @@ pop at each move. However, this presented difficulties when implementing
 animations and special moves and animations. The code was generally cluttered
 and not up to an acceptable quality.
 \subsection{The solution}
-\label{sec:orgc7287a9}
+\label{sec:org7f40e14}
 To remedy the mentioned problems a custom class was devised, and aptly name
 \texttt{CustomPiece}. This class acts as a generalised representation of a piece which
 is able to act upon itself and the Blender model it puppets. Stored within an
 unrolled 2d array with the index representing its position on the chess board
-(See \hyperref[sec:org789c6c4]{Python implementation - Array Index to world space}) the object is able to
+(See \hyperref[sec:org027462f]{Python implementation - Array Index to world space}) the object is able to
 move itself within the array while handling move and capture animations. Special
-move handling is generalised into the main loop, (See \hyperref[sec:orgc8b627b]{Python implementation -
+move handling is generalised into the main loop, (See \hyperref[sec:org5b009c3]{Python implementation -
 Special moves}).
 
 This design approach has clear advantages such as
@@ -474,7 +582,7 @@ An initial sketch of this class can be seen here \ref{class-sketch}.
 
 Implementation can be see here \ref{class-src}.
 \subsection{Array index to world space}
-\label{sec:org789c6c4}
+\label{sec:org027462f}
 \texttt{python-chess} provides great functionality to retrieve what square a move is
 coming from, and going to. Internally this is stored as a \texttt{int} representing
 each square in 1d array notation.
@@ -518,7 +626,7 @@ To convert form array indexing two simple expressions were used.
 Note the addition of \(0.5\) is to centre the pieces on the board squares in
 world space and will be excluded from further examples.
 \subsubsection{Abuse of this functionality}
-\label{sec:org6bf530f}
+\label{sec:orgfb57a96}
 \begin{wrapfigure}[14]{r}{0.4\textwidth}
 \centering
 \includegraphics[width=0.35\textwidth]{Images/tikzit_image0.png}
@@ -539,7 +647,7 @@ back rank pieces.
 
 \newpage
 \subsection{Special moves}
-\label{sec:orgc8b627b}
+\label{sec:org5b009c3}
 Figure \ref{flowchart} shows the main loop logic, used to move the correct pieces.
 \begin{figure}[htbp]
 \centering
@@ -547,7 +655,7 @@ Figure \ref{flowchart} shows the main loop logic, used to move the correct piece
 \caption{\label{flowchart}Main loop logic}
 \end{figure}
 \subsubsection{Castling}
-\label{sec:org0256cff}
+\label{sec:org92a798f}
 Within standard chess there are only four castling possibilities, these are easy
 enough to check naively. This is the only section that limits this script to
 standard chess. To extend support to \texttt{chess960}, a bit-board mask of all the
@@ -569,7 +677,7 @@ that will be castled. See \href{https://python-chess.readthedocs.io/en/latest/co
 \end{Verbatim}
 \end{Code}
 \subsubsection{En passant}
-\label{sec:orga864584}
+\label{sec:org8a1efdc}
 The \texttt{python-chess} library makes handling en passant a breeze. The move is
 checked if it is an en passant first, then as only one square is possible of an
 en passant on any move that position is retrieved.
@@ -584,7 +692,7 @@ en passant on any move that position is retrieved.
 \end{Verbatim}
 \end{Code}
 \subsubsection{Promotion}
-\label{sec:org69e6695}
+\label{sec:orgfdb446c}
 Contained within a separate conditional is the promotion logic. This is handled
 separately from the rest of the logic as a move can be both a capture and a
 promotion.
@@ -608,12 +716,12 @@ been moved and that animation needs to finish before it can be hidden.
 Within the Blender view port the pieces that will be promoted too already exist
 at the right position, they are just not rendered until needed.
 \subsection{Animation}
-\label{sec:orgbb0100e}
+\label{sec:orgc2ef893}
 \subsubsection{Key frames}
-\label{sec:org4c34590}
+\label{sec:org4178701}
 To animate an object within blender two key-frames must be inserted with
 different values for some property at varying times. Blender will then
-interpolate between them (See \hyperref[sec:org3e8ac5b]{Python implementation - Interpolation} for
+interpolate between them (See \hyperref[sec:orge154360]{Python implementation - Interpolation} for
 interpolation methods)
 
 Key-frames for all pieces are inserted every move. This is done to ensure
@@ -678,7 +786,7 @@ allows for ease fixed distance rotations.
 \caption{\label{camera-parent}Camera parent axis}
 \end{figure}
 \subsubsection{Interpolation}
-\label{sec:org3e8ac5b}
+\label{sec:orge154360}
 Blender offers 3 curves for interpolation between key-frames.
 \begin{itemize}
 \item Constant\\
@@ -699,7 +807,7 @@ preferred option for piece movement. However, linear was opted for the camera
 motion although a cubic Bézier curve would produce the same outcome as it made
 debugging slightly easier.
 \subsection{Reproducibility}
-\label{sec:org5a3ca3e}
+\label{sec:org881b5ca}
 This project was created used
 \begin{itemize}
 \item Blender \texttt{2.92}
@@ -712,7 +820,7 @@ for the \texttt{\_\_future\_\_} module. Past \texttt{3.10} the \texttt{\_\_futur
 \url{https://github.com/niklasf/python-chess}
 \end{itemize}
 \subsubsection{Python environment}
-\label{sec:orgd1e9c32}
+\label{sec:org4f56798}
 Blender is distributed with its own python installation for consistency, however
 this means that installed python modules are not present
 \cite{blender-python-env}. To mitigate this the \texttt{-{}-target} flag for \texttt{pip install}
@@ -727,13 +835,13 @@ This ensures Blenders \texttt{Python} will has access to the required libraries 
 script to function.
 
 \section{Results}
-\label{sec:org14d00d0}
+\label{sec:orga5fe78d}
 \section{Evaluation}
-\label{sec:org8bd6252}
+\label{sec:org37ec1e8}
 
 \newpage
 \section{Appendix}
-\label{sec:orge86219d}
+\label{sec:org94f3de9}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Scratchpad.pdf}
