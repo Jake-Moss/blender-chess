@@ -131,15 +131,18 @@ the subsurface methods.
    opaque. Described by a ~BSSRDF~ (bidirectional subsurface scattering
    reflectance distribution function)
    - Christensen-Burley \\
-     The ~Chistensen-Burley~ method is an approximation of a physically based
+     The ~Christensen-Burley~ method is an approximation of a physically based
      volumetric scattering system with faster evaluation and efficiency cite:Christensen-Burley.
-     TODO
    - Random walk \\
-     ...
-     This comes at a cost of rendering time (actually performance hit is largely
+     Apposed to the approximations use the in the ~Christensen-Burley~ model,
+     the ~Random walk~ modelling uses true volumetric scattering inside the mesh.
+     Due to this the model does not perform well when the mesh is not closed.
+     This accuracy comes at a cost of rendering time (actually performance hit is largely
      dependent on the model itself), and increased noise.
-     TODO
 
+    Accuracy within the subsurface scattering was not an area of importance
+    within this report thus the ~Christensen-Burley~ model was chosen due to
+    its better performance.
 
 All renders within this report have ~Multiple-scattering GGX~ enabled as the
 benefit was need to outweigh the cost.
@@ -177,7 +180,7 @@ object  a ~Screw~ modifier was applied.
 The notable changes from the default settings is the lowering of the steps from
 \(16 \to 10\) and disabling ~Smooth Shading~. This was a stylistic choice as it
 was believed that the low polygon look would better demonstration reflections and
-the planned indirect lighting (See [[*Disco ball][Lighting - Disco Ball]]).
+the planned indirect lighting (See [[*Disco ball][Lighting - Disco Ball]]).\\
 
 To model the knight, 3 separate reference images where used. The base was
 constructed in a similar manner to the other pieces. The head was modelled
@@ -208,7 +211,7 @@ The finally piece models appear as below.
 The chess board model is a simple rectangular based prism with dimensions ~8m x
 8m x 0.4m~. The checker board texture comes from the ~Checker Texture~, with
 ~scale=8.0~ and black and white colours. This texture output is then feed into
-the base colour input of a ~Principled BSDF~ shader node.
+the base colour input of a ~Principled BSDF~ shader node.\\
 
 #+name: checker-texture
 #+caption: Complete checker board texture.
@@ -221,6 +224,43 @@ such that the very bottom left handle corner of the board was at ~0,0~
 with each squares dimensions as ~1m x 1mx~. This positioning becomes important
 in [[*Array index to world space][Python implementation - Array index to world space]].
 **** Marble exterior
+#+name: marble-normal-texture
+#+caption: Marble normal texture
+#+attr_org: :height 100
+#+attr_latex: :float wrap :width 0.2\textwidth :placement [12]{r}{0.3\textwidth}
+[[file:Images/normal.png]]
+
+The marble exterior was added to showcase reflections, shadows, bloom, and specular
+highlights through the use of procedural texture and normal mapping.\\
+
+To accomplish this texture layered Perlin noise was used. The first set of
+switch derives its coordinators from the ~Texture Coordinate~ node which is set
+to use the mesh [fn:6]. The ~Mapping~ node is extraneous in this example, simply
+used to move the Perlin noise map around. The second layer of Perlin noise uses
+the already nosy surface to create the dark patches marble typically feature.
+The colour ramp is used to brighten and shade the darker patches of noise. This
+colour is then used as the base colour for the ~BSDF~ shader. To give this
+texture some depth the colour output of the ramp is used to create a normal map.
+Colour data (yellow node) is used a vector input can yield unexpected results.
+To remedy this the colour data is first past through a ~Bump~ node as the height
+data and then fed into the ~BSDF~ shader.
+
+#+name: marble-texture
+#+caption: Complete marble texture
+#+attr_org: :height 100
+#+attr_latex: :width \textwidth
+[[file:Images/marbletextire.png]]
+
+#+caption: Cycles marble render
+#+attr_org: :height 100
+#+attr_latex: :width \textwidth
+[[file:Images/Marble cycles.png]]
+
+#+caption: Eevee marble render
+#+attr_org: :height 100
+#+attr_latex: :width \textwidth
+[[file:Images/Marble eevee.png]]
+\newpage
 ** Particle effects
 *** Explosions
 Initially an explosion was planned an each piece capture as a way to add some
@@ -229,10 +269,10 @@ were deemed obscene. A demo render featuring a smoke cloud was created and can
 be viewed here [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/smoke.mp4][master/Videos/smoke.mp4]].
 *** Confetti
 As an alternative to explosions, a confetti shower on the winning king (only
-checkmates deserve confetti) was added instead.
+checkmates deserve confetti) was added instead.\\
 
 The confetti is still an explosion but with the outgoing particles are set to a
-collection of "confetties". The source of the explosion is a upwards facing
+collection of "confetti's". The source of the explosion is a upwards facing
 dome, this gives the confetti a even spread. The particles are set to have
 randomised, size, rotation, angular velocity, normal velocity. To achieve the
 slow fall effect the effective gravity of the particle simulation was lowered to
@@ -256,6 +296,7 @@ A sample render can be seen below.
 #+attr_org: :width 200
 #+attr_latex: :width \textwidth
 [[file:Images/Confetti! cycles.png]]
+\newpage
 ** Lighting
 The power of Blender lights is measured in ~Watts~, however this is not the same
 wattage that consumer lights bulbs are rated in. Blenders light power is rater
@@ -350,6 +391,8 @@ some distance metric. The standard Euclidean distance is used here.
 #+attr_latex: :width 0.7\textwidth
 [[file:Images/discoball_texture.png]]
 \newpage
+With the disco ball texture and model complete a two red and blue lights were
+trained on the disco ball. The results can be seen with the [[*Render engine][Render engine section]].
 ** Render engine
 Blender offers two modern rendering engines, when working on a project it is
 important to keep in mind what engine is desired as to keep in mind the
@@ -360,26 +403,143 @@ engines were still made in order to compare them.\\
 This project also made use of third engine, ~Luxcore~. [[https://luxcorerender.org/][~Luxcore~]] is a free and
 open source rendering engine designed specifically to model physically accurate
 light transportation.
+\newpage
 *** Eevee
+Blenders ~Eevee~ is designed to be used within the view port for real time rendering previews
+~Eevee~ must cut a lot of corners to achieve its speed. Although these
+approximations are physically based, the behaviour of light suffers. By default
+mirrors do not function (without explicitly enabling) and caustics are not present at all.\\
+
+~Eevee~'s pipeline, while [[https://wiki.blender.org/wiki/Source/Render/EEVEE/GPUPipeline][lacking signifcant documentation]], is that of a typical
+rasterisation engine.
+#+name: rendering-pipline-eevee
+#+caption: Rendering pipeline [[https://www.khronos.org/opengl/wiki/File:RenderingPipeline.png][(Source)]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth
+[[file:Images/RenderingPipeline.png]]
+
+1. Vertices are retrieved from the buffer object [fn:5]. This includes vertex
+   colours, UV coordinates, and vertex locations of polygons.
+   a. The retrieved vertices are transformed to the post-projection space by the
+      vertex shader.
+   b. (Optional) Tesselation is where patches of vertex data are subdivided into
+      smaller interpolated points. This is useful to dynamically add or subtract
+      detail from a polygon mesh.
+   c. (Optional) The geometry shader is used to conduct layered rendering which is
+      useful when cube based shadow mapping or rendering cube enrichment map
+      without having to rend the entire scene multiple times.
+2. Vertex post-processing - output from the previous stages is collected
+   and prepared for the following stages.
+   a. In Transformation Feedback the output of the Vertex Processing stages is
+      recorded and place into buffer objects, preserving the post-transformation
+      rendering state such that it can be resubmitted to various processes.
+   b. Primitive Assembly prepares the primitives for the rasterizer by dividing
+      them into a sequence of triangles and stored in an efficient method.
+   c. Geometry outside of the view is culled and vertices are transform from NDC
+      to screen-space.
+3. Rasterization projects the geometry onto a raster of pixels and outputs a
+  collection of fragments. Each fragment represents a rasterized triangle.
+  Multi-sampling occurs when multiple fragments come from a single pixel.
+4. The fragment shader takes these fragments and computes the ~z-depth~ for
+   each pixel along with the colour values. Colour is computed using the
+   surfaces ~BSDF~.
+5. Per-sample operations are used to cull fragments that are not visible, and
+   determine the transparency.
+Outside of this pipeline (concurrently) are compute shaders, often these are
+used to compute arbitrary information, i.e. tasks not directly related to drawing
+triangles or pixels. Particles and fluid simulations, and terrain height map
+generation are common application of compute shaders.
+
 *** Cycles
-~Cycles~ is a physically based rendering engine
-- backwards path tracer
+#+name: light-path
+#+caption: Light path diagram [[https://docs.blender.org/manual/en/latest/render/cycles/render_settings/light_paths.html][(Source)]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.7\textwidth
+[[file:Images/render_cycles_render-settings_light-paths_rays.png]]
+~Cycles~ is a physically based backwards path tracing rendering engine. While
+this engine is  physically based, it is not physically correct. It does not aim
+to be either cite:design-goals.\\
+
+\newpage
+#+caption: Backwards path tracer [[https://www.scratchapixel.com/lessons/3d-basic-rendering/global-illumination-path-tracing][(Source)]]
+#+attr_org: :width 200
+#+attr_latex: :float wrap :width 0.35\textwidth :placement [19]{r}{0.4\textwidth}
+[[file:Images/shad2-globalillum1a.png]]
+In backwards path tracers the paths are generated starting from the camera. They
+are bounded around the scene until encountering the light source they "originated" from.
+This is considered an efficient method for direct lighting as a ray will always
+yield some result opposed the forward path tracing where many light rays may
+never reach the camera.\\
+
+Cycles offers two integrators, ~Path Tracing~ and ~Branched Path Tracing~. Where
+~Branched Path Tracing~  differs is that a pure path tracer, each bounce of the
+light ray bounces in one direction and will pick one light to receive lighting
+from, while a ~Branched Path Tracing~ will split the path for the first bounce
+into multiple rays and sample from multiple lights. Naturally this makes
+sampling considerably slower, however it offers lower noise in scenes primarily
+lit by a one or single bounce lighting. It is possible to split the ray on
+successional bounces as well however the complexity will increase exponentially
+for diminishing returns.\\
+
+To combat noise the ~OptiX~ denoiser was employed as it operates best on NVIDIA
+hardware.\\
+
+Being a jack of all trades Cycles suffers in some areas when compared to
+specialised engines such as ~Luxcore~. Specifically Cycles suffers significantly
+in advanced light effects such as caustics as explicitly noted in their
+documentation cite:blender-sampling.\\
+
+#+name: caustics
+#+caption: Caustics diagram [[https://www.scratchapixel.com/lessons/3d-basic-rendering/global-illumination-path-tracing][(Source)]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.4\textwidth
+[[file:Images/caustics2.png]]
+Caustics are the optical phenomenon of light patterns forming on surfaces
+through reflections and refraction. These are notably difficult to calculate
+efficiently [fn:7] using a unidirectional path tracer as many rays will not
+collide with the object that should be focusing light. One solution to this is a
+technique called photon mapping. In photon mapping an initial pass of the scene
+is done using a forwards path tracer to follow the path of light rays as they
+interact with glossy and refractive objects.\\
+
+Cycles is significantly slower that ~Eevee~ (~1min vs 16 seconds~ for some single
+frame renders). With adaptive sampling the number of samples conducted in less
+noisy areas is automatically resulting in a performance improvements.
 **** Thank you to Jack
 Due to significant hardware limitations for ray-tracing (~GTX 760, i5-4670~), a
 favour was called in with a good friend, Jack kindly lent their ~RTX 2070~  for a
 cycles render. See [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble_cycles.mp4][master/Videos/Marble\under{}cycles.mp4]].
 *** Luxcore
-Due to the limitations of ~Eevee~ and ~Cycles~, specifically the lack of
-bidirectional path tracing, the ~Luxcore~ rendering engine was chosen to render
-disco chess.\\
+Another algorithm to calculate caustics is bidirectional path tracing. For each
+sample two paths are traced independently using forward and backwards path tracing.
+From this every vertex of one path can be connected directly to every vertex of
+the other. Weighting all of these sampling strategies using Multiple Importance
+Sampling creates a new sampler that can converge faster than unidirectional path
+tracing despite the additional work per sample. This works particularly well for
+caustics or scenes that are lit primarily through indirect lighting as instead
+of connection rays to the camera or source, instead rays are connected to
+each other. This allows rays that are very close to form a path cite:Caustic-Connection.
 
+#+name: bidirectional
+#+caption: Different connection strategies [[https://graphics.pixar.com/library/CausticConnections/paper.pdf][(Source)]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.7\textwidth
+[[file:Images/bidirectional diagram.png]]
 
-Bidirectional path tracing
+~Luxcore~ documentation recommends enabling the ~Metropolis sampler~ when using
+bidirectional path tracing. This allows ~Luxcore~ to spend more time sampling
+bright areas of the image and thus rendering caustics with greater accuracy.
+However, this causes significantly more RAM usage. This was not enabled during
+the ~Luxcore~ render due to memory restrictions.
+
+~Luxcore~ offers caching of caustics through the ~PhotonGI caustic cache~ option
+however this is only applicable the scene this static (with the exception of the
+camera).
 *** Tragedy - 22:20, 01/June/2021
 At 10:20pm on the first of June the PC that had been enslaved to rendering a
-Luxcore for more than 96 hours straight, died. It had been a good 8 years, but
-she finally gave out. Official cause of death is unknown but it suspected to be
-something to do with power delivery.\\
+~Luxcore~ render for more than 96 hours straight, died. It had been a good 8
+years, but she finally gave out. Official cause of death is unknown but it
+suspected to be something to do with power delivery.\\
 
 A successful data recovery was conducted the next morning. Only the last 12
 frames were missing, they were rendered on another device. See
@@ -734,6 +894,13 @@ class CustomPiece():
 \newpage
 \printbibliography
 * Footnotes
+
+[fn:7]There is nothing inherently difficult about caustics, any path tracer can
+render them. Instead it is a matter of convergance speed.
+[fn:6]A very interesting effect and be achieve by using the ~Camera~ as the
+source of the coordinates. The marble texture flows like sea foam as the camera spins.
+
+[fn:5]A buffer object is an array of unformatted memory allocated by the GPU.
 [fn:4]Note ~div~ here is integer division.
 
 [fn:3]Note that the ~Distrubution~ option Blender gives is different from the
@@ -748,4 +915,5 @@ for the ~__future__~ module. Past ~3.10~ the ~__future__~ module is no longer re
 
 
 #  LocalWords:  Eevee Luxcore shaders programmatically macrosurface BSDF shader
-#  LocalWords:  microsurface microfacet GGX microfacets Bézier
+#  LocalWords:  microsurface microfacet GGX microfacets Bézier rasterisation
+#  LocalWords:  unformatted Perlin
