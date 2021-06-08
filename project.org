@@ -203,9 +203,13 @@ manually (read painstakingly).
 
 Additionally ico-spheres where added  to piece some pieces additional detail.
 The finally piece models appear as below.
+#+caption: Final models
 #+attr_org: :width 200
 #+attr_latex: :width 0.5\textwidth
 [[file:Images/Pieces.png]]
+\newpage
+
+
 *** Board
 **** Chess board
 The chess board model is a simple rectangular based prism with dimensions ~8m x
@@ -223,6 +227,7 @@ Within world space the board was positioned in the positive, positive quadrant
 such that the very bottom left handle corner of the board was at ~0,0~
 with each squares dimensions as ~1m x 1mx~. This positioning becomes important
 in [[*Array index to world space][Python implementation - Array index to world space]].
+\newpage
 **** Marble exterior
 #+name: marble-normal-texture
 #+caption: Marble normal texture
@@ -244,7 +249,6 @@ texture some depth the colour output of the ramp is used to create a normal map.
 Colour data (yellow node) is used a vector input can yield unexpected results.
 To remedy this the colour data is first past through a ~Bump~ node as the height
 data and then fed into the ~BSDF~ shader.
-
 #+name: marble-texture
 #+caption: Complete marble texture
 #+attr_org: :height 100
@@ -530,11 +534,16 @@ each other. This allows rays that are very close to form a path cite:Caustic-Con
 bidirectional path tracing. This allows ~Luxcore~ to spend more time sampling
 bright areas of the image and thus rendering caustics with greater accuracy.
 However, this causes significantly more RAM usage. This was not enabled during
-the ~Luxcore~ render due to memory restrictions.
+the ~Luxcore~ render due to memory restrictions.\\
 
 ~Luxcore~ offers caching of caustics through the ~PhotonGI caustic cache~ option
 however this is only applicable the scene this static (with the exception of the
-camera).
+camera).\\
+
+~Luxcore~ does not finish rendering a scene like ~Eevee~ and ~Cycles~, instead
+the user must set halt conditions manually. For all renders by within this
+report the halt time was set to 10mins. This gave the engine ample time to
+converge.
 *** Tragedy - 22:20, 01/June/2021
 At 10:20pm on the first of June the PC that had been enslaved to rendering a
 ~Luxcore~ render for more than 96 hours straight, died. It had been a good 8
@@ -819,7 +828,202 @@ This ensures Blenders ~Python~ will has access to the required libraries for thi
 script to function.
 
 * Results
-* Evaluation
+Animations referenced in this section are available on the [[https://github.com/Jake-Moss/blender-chess/tree/master/Videos][public GitHub repo.]]
+They will be refereed to by their filenames[fn:8] and hyperlinked to. The still
+renders below may not appear within the animations as they may not be suitable
+to comparison, instead still renders from the same scenes are included to
+showcase these effects. The animations themselves and the appearance of these
+effects will be shown within the presentation.
+
+- [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble_eevee_higher.mp4][~Marble_eevee.mp4~]]\\
+  This is the complete product. Rendered using ~Eevee~
+- [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble_cycles_higher.mp4][~Marble_cycles.mp4~]]\\
+  This is the path traced render of the final scene for comparison purposes. The
+  scene and setup is identical other than the engine.
+- [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/disco_luxcore.mp4][~disco_luxcore.mp4~]]\\
+  Disco chess was set to render long before this project was near completion.
+  Although it is missing many key aspects and features its purpose is to
+  demonstrate what bidirectional path tracing can do for caustics. ~Luxcore~ has
+  a few notable incompatibilities with some aspects of the scene. This will be
+  discussed in the presentation.
+
+#+name: confetti-eevee
+#+caption: Confetti comparison Eevee
+#+attr_org: :width 200
+#+attr_latex: :width \textwidth
+[[file:Images/confetti-eevee.png]]
+
+#+name: confetti-cycles
+#+caption: Confetti comparison Cycles
+#+attr_org: :width 200
+#+attr_latex: :width \textwidth
+[[file:Images/confetti-cycles.png]]
+
+#+latex: \begin{figure}[htbp]
+#+begin_center
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:Images/confetti-eevee-1.png]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:Images/confetti-eevee-2.png]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:Images/confetti-eevee-3.png]]
+#+end_center
+#+latex: \caption{\label{confetti-eevee-close}Eevee confetti close up}
+#+latex: \end{figure}
+#+latex: \begin{figure}[htbp]
+#+begin_center
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:Images/confetti-cycles-1.png]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:Images/confetti-cycles-2.png]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:Images/confetti-cycles-3.png]]
+#+end_center
+#+latex: \caption{\label{confetti-cycles-close}Cycles confetti close up}
+#+latex: \end{figure}
+\newpage
+It is clear from the close up figures that ~Cycles~ produces significantly more
+believable lighting due to its ability to accurately computer indirect lighting.
+~Eevee~ tries its best with its approximations of shadows however it fails
+correctly illuminate the arch formed by two other pieces of confetti.\\
+
+Between the two intersection pieces on the right most image, ~Cycles~ correctly
+provides the indirect and ambient occlusion that should be present within such a
+formation. ~Eevee~ illuminates the whole purple face as if the pink piece was
+not present at all. The shadows cast by the pieces are also not present at
+all.\\
+
+~Eevee~ also struggles to deal with the twist in the teal piece (left most
+image), ~Cycles~ correctly produces the indirect lighting and shadowing.
+#+name: reflections-eevee
+#+caption: Comparison Eevee
+#+attr_org: :width 200
+#+attr_latex: :width \textwidth
+[[file:Images/reflections-eevee.png]]
+
+#+name: reflections-cycles
+#+caption: Comparison Cycles
+#+attr_org: :width 200
+#+attr_latex: :width \textwidth
+[[file:Images/reflections-cycles.png]]
+
+#+latex: \begin{figure}[htbp]
+#+begin_center
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:Images/reflections-eevee-1.png]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.3\textwidth :center nil
+[[file:Images/reflections-cycles-1.png]]
+#+end_center
+#+latex: \caption{\label{reflections-close}Eevee-Cycles reflections close up}
+#+latex: \end{figure}
+#+latex: \begin{figure}[htbp]
+#+begin_center
+#+attr_org: :width 200
+#+attr_latex: :width 0.4\textwidth :center nil
+[[file:Images/reflections-eevee-2.png]]
+#+attr_org: :width 200
+#+attr_latex: :width 0.4\textwidth :center nil
+[[file:Images/reflections-cycles-2.png]]
+#+end_center
+#+latex: \caption{\label{shading-close}Eevee-Cycles shading close up}
+#+latex: \end{figure}
+\newpage
+In Figure [[ref:reflections-close]] ~Cycles~'s shadowing and reflectance create a
+sharper outline around the pawn. ~Eevee~ does not show this as the reflectance
+is an approximation using the depth buffer and the previous frame colour.\\
+
+On the space tile ~Cycles~ is able to correctly compute the reflection of the
+piece in a sharp manner as expected by a material with a mirror like finish.
+~Eevee~'s approximations once again cause the reflections to be blurred.\\
+
+Within the same figure the normal map of the marble texture causes the light to
+waver reflect in a non-uniform manner.\\
+
+In Figure [[ref:shading-close]] ~Eevee~ adds shadows without considering indirect
+lighting. ~Cycles~ produces a more realistic result. The intersection of all the
+shadows should not be the sum of its elements are the indirect lighting will
+illuminate it partially.
+
+#+caption: Cycles attempting disco chess
+#+attr_org: :width 200
+#+attr_latex: :width \textwidth
+[[file:Images/Disco kinda working.png]]
+
+#+caption: Luxcore succeeding at disco chess (Frame from [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/disco_luxcore.mp4][disco_luxcore.mp4]])
+#+attr_org: :width 200
+#+attr_latex: :width \textwidth
+[[file:Images/mpv-shot0001.jpg]]
+
+Some of ~Cycles~ backwards rays do make it to the light source, unfortunately
+this is not enough accurate for the denoiser not to be fooled, it tires its best
+to clean up this noise and creates a faint pink glow on the board an pieces.\\
+
+Due to ~Luxcore~'s bidirectional path tracing it does not suffer from this and
+is able to compute the caustics accurately and within a reasonable convergence
+time. However, the image is still exceptionally noisy and requires longer
+rendering time to reach the noise thresholds of ~Cycles~.
+
+Animations were rendered to individual frames as PNGs, they were then assembled
+using ~ffmpeg~.
+#+begin_src bash :exports code
+ffmpeg -framerate 24 -s 1920x1080 -i %04d.png -vcodec libx264 -crf 25 -pix_fmt yuv420p ../Videos/$FILENAME.mp4
+#+end_src
+* Self-evaluation
+** Further additional marks
+ 1. ~Report is well-written and concise~\\
+    I believe this report is well-written and concise where possible while still covering many
+    important topics. (1 Mark)
+ 2. ~Report text and image examples support each other well~\\
+    Images and diagrams were used in conjunction with text to better portray my
+    ideas and understanding. Screenshots of texture configurations and the
+    accompanying reasons are an example of this. (1 Mark)
+ 3. ~An ample number of illustrative images are used to clearly demonstrate the
+    techniques~\\
+    I have consistently used images to illustrate concepts and techniques used
+    along with the results of texture generation, modelling, and rendering. (1 Mark)
+ 4. ~It is evident from the report whether or not the techniques implemented
+    were appropriate for achieving the task~\\
+    I believe I used appropriate techniques to create a visually appealing
+    model. For example, ~MIS, Screen Space Reflections, Adaptive Sample,
+    and Caustics~ are relevant to the project and work to create a visually
+    appealing animation. (1 Mark)
+ 5. ~Techniques chosen were carefully considered and compared with alternatives
+    demonstrating insight into the design decision process~\\
+    I chose techniques thought best demonstrate adequate knowledge while
+    working towards a visually appealing  result. Many features and algorithms
+    were consider which are more physically correct or such but were not in cost
+    worthy or feasible. (1 Mark)
+ 6. ~Report demonstrates significant work testing and applying techniques~\\
+    Through this report I have shown significant testing throughout the
+    application and comparison of techniques including differences between
+    rendering engines and their effect on caustics. (1 Mark)
+ 7. ~The report demonstrates that independent research extending beyond the specific course taught techniques have contributed to the final project in a meaningful way~\\
+    I have delved into the source of Blender to find methods and algorithms used
+    where I found documentation to be lacking. I found, read, and cited original
+    papers detailing ~GGX, MSGGX, Christensen-Burley model, and Random walk
+    model~. (2 Marks)
+ 8. ~Large variety of techniques applied~\\
+    I have used;
+    - Procedural texture and normal map generation using noise functions
+    - Particle systems and explosion
+    - Direct and indirect lighting
+    - Reflections, bloom, specular reflection and other lighting effects
+    - Advanced lighting techniques (caustics)
+    - A variety of rendering algorithms including rasterization, path tracing,
+      and bidirectional path tracing
+    (2 Marks)
+ 9. ~Final product looks visually appealing and complete~\\
+    Throughout this project I always aimed to create something visually appealing.
+    I believe I have excelled at this and made something I would display
+    publicly with pride. (2 Marks)
 
 \newpage
 * Appendix
@@ -894,9 +1098,10 @@ class CustomPiece():
 \newpage
 \printbibliography
 * Footnotes
+[fn:8] ~higher/lower~ within files names refers to the bit-rate of the assembled images.
 
 [fn:7]There is nothing inherently difficult about caustics, any path tracer can
-render them. Instead it is a matter of convergance speed.
+render them. Instead it is a matter of convergence speed.
 [fn:6]A very interesting effect and be achieve by using the ~Camera~ as the
 source of the coordinates. The marble texture flows like sea foam as the camera spins.
 
@@ -916,4 +1121,4 @@ for the ~__future__~ module. Past ~3.10~ the ~__future__~ module is no longer re
 
 #  LocalWords:  Eevee Luxcore shaders programmatically macrosurface BSDF shader
 #  LocalWords:  microsurface microfacet GGX microfacets Bézier rasterisation
-#  LocalWords:  unformatted Perlin
+#  LocalWords:  unformatted Perlin denoiser

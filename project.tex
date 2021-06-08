@@ -1,4 +1,4 @@
-% Created 2021-06-08 Tue 03:09
+% Created 2021-06-09 Wed 03:07
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -141,9 +141,9 @@
 \newpage
 
 \section{Introduction}
-\label{sec:orga3ae618}
+\label{sec:org8c500e7}
 \subsection{Project aims}
-\label{sec:orgfeb22c0}
+\label{sec:orgbdc4995}
 This project aims to demonstrate a sufficient knowledge of computer graphics
 techniques and implementations through the creation of a visually appealing
 chess game animation tool. This was accomplished using Blender, and its python
@@ -166,19 +166,19 @@ for chess games) parsing. This library is designed to be able to function as
 back-end, making it perfect to use in conjunction with Blender.
 \end{itemize}
 \section{The plan}
-\label{sec:org332a1a1}
+\label{sec:org64a32e5}
 During the proposal the plan was to create an interactive, real time chess
 board, however this was changed as the techniques and concepts would be severely
 limited. Blender with python scripting was a perfect compromise.
 \section{Blender implementation}
-\label{sec:org245213a}
+\label{sec:orgd6eebb5}
 \subsection{Modelling, textures, and shading}
-\label{sec:org55403e2}
+\label{sec:orga6e5705}
 The scaling of the models was deliberately chosen to be unrealistic in order to
-simplify the translation from position with the back to front end (See \hyperref[sec:org67aeaaf]{Python
+simplify the translation from position with the back to front end (See \hyperref[sec:orgd755ba3]{Python
 side - Array index to world space})
 \subsubsection{Nodes}
-\label{sec:orgf14c67b}
+\label{sec:orgc300854}
 Blender nodes allow for the creation of textures and shaders through a pipeline
 of simple operations to create complex procedural results. Its simple to
 understand visual workflow is a popular alternative to layer based compositing.
@@ -195,12 +195,12 @@ values on the respective node.
 and resolution.
 \end{itemize}
 \subsubsection{Shaders}
-\label{sec:org9abef21}
+\label{sec:org9fed0f7}
 A shader is a program, typically run on the GPU, to computer the colour of a
 group or individual pixel. These shaders describe the lighting interactions of
 objects or surfaces, such as reflection, refractions, and absorption.
 \paragraph{Principled BSDF}
-\label{sec:org3e2fb22}
+\label{sec:org15522d3}
 A \texttt{BSDF} (Bidirectional Scattering Distribution Function) describes how light
 scatters on a surface. In computer graphics, computing a highly detailed
 microsurface is not feasible, instead it is replaced with a simplified
@@ -295,7 +295,7 @@ on the surface and inside a material.
 
 
 \subsubsection{Pieces}
-\label{sec:orgfaed952}
+\label{sec:org73ca83a}
 Pieces were modelled after the reference image below Figure \ref{piece-reference}.
 From this image the pieces where traced using the \texttt{Add Vertex} tool, from the
 \href{https://docs.blender.org/manual/en/2.92/addons/add\_mesh/mesh\_extra\_objects.html}{Add Mess Extra Objects} add-on. To transform this line of vertices to a solid
@@ -314,7 +314,7 @@ object  a \texttt{Screw} modifier was applied.
 The notable changes from the default settings is the lowering of the steps from
 \(16 \to 10\) and disabling \texttt{Smooth Shading}. This was a stylistic choice as it
 was believed that the low polygon look would better demonstration reflections and
-the planned indirect lighting (See \hyperref[sec:org64438b9]{Lighting - Disco Ball}).\\
+the planned indirect lighting (See \hyperref[sec:orga93bd61]{Lighting - Disco Ball}).\\
 
 To model the knight, 3 separate reference images where used. The base was
 constructed in a similar manner to the other pieces. The head was modelled
@@ -331,13 +331,18 @@ manually (read painstakingly).
 
 Additionally ico-spheres where added  to piece some pieces additional detail.
 The finally piece models appear as below.
-\begin{center}
+\begin{figure}[htbp]
+\centering
 \includegraphics[width=0.5\textwidth]{Images/Pieces.png}
-\end{center}
+\caption{Final models}
+\end{figure}
+\newpage
+
+
 \subsubsection{Board}
-\label{sec:orgd305d2f}
+\label{sec:org9a78a03}
 \paragraph{Chess board}
-\label{sec:org60ed7f9}
+\label{sec:orgb545b6c}
 The chess board model is a simple rectangular based prism with dimensions \texttt{8m x
 8m x 0.4m}. The checker board texture comes from the \texttt{Checker Texture}, with
 \texttt{scale=8.0} and black and white colours. This texture output is then feed into
@@ -352,9 +357,10 @@ the base colour input of a \texttt{Principled BSDF} shader node.\\
 Within world space the board was positioned in the positive, positive quadrant
 such that the very bottom left handle corner of the board was at \texttt{0,0}
 with each squares dimensions as \texttt{1m x 1mx}. This positioning becomes important
-in \hyperref[sec:org67aeaaf]{Python implementation - Array index to world space}.
+in \hyperref[sec:orgd755ba3]{Python implementation - Array index to world space}.
+\newpage
 \paragraph{Marble exterior}
-\label{sec:org93c1dfc}
+\label{sec:orgecd2be3}
 \begin{wrapfigure}[12]{r}{0.3\textwidth}
 \centering
 \includegraphics[width=0.2\textwidth]{Images/normal.png}
@@ -376,7 +382,6 @@ texture some depth the colour output of the ramp is used to create a normal map.
 Colour data (yellow node) is used a vector input can yield unexpected results.
 To remedy this the colour data is first past through a \texttt{Bump} node as the height
 data and then fed into the \texttt{BSDF} shader.
-
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Images/marbletextire.png}
@@ -396,15 +401,15 @@ data and then fed into the \texttt{BSDF} shader.
 \end{figure}
 \newpage
 \subsection{Particle effects}
-\label{sec:org03a7730}
+\label{sec:org62c1aed}
 \subsubsection{Explosions}
-\label{sec:org759e9ca}
+\label{sec:org325aa69}
 Initially an explosion was planned an each piece capture as a way to add some
 flare. However this was quickly scrapped as the additional baking and rendering time
 were deemed obscene. A demo render featuring a smoke cloud was created and can
 be viewed here \href{https://github.com/Jake-Moss/blender-chess/blob/master/Videos/smoke.mp4}{master/Videos/smoke.mp4}.
 \subsubsection{Confetti}
-\label{sec:org33e24c3}
+\label{sec:org4e12650}
 As an alternative to explosions, a confetti shower on the winning king (only
 checkmates deserve confetti) was added instead.\\
 
@@ -432,7 +437,7 @@ A sample render can be seen below.
 \end{figure}
 \newpage
 \subsection{Lighting}
-\label{sec:orga10d1dc}
+\label{sec:org1e29e1b}
 The power of Blender lights is measured in \texttt{Watts}, however this is not the same
 wattage that consumer lights bulbs are rated in. Blenders light power is rater
 in radiant flux, which is the measure of radiant energy emitted per unit time
@@ -464,7 +469,7 @@ Candle & 0.05 W & Point\\
 \end{table}
 
 \subsubsection{Direct}
-\label{sec:orgd76b4cc}
+\label{sec:orgfaf5577}
 To directly light the scene four spot lights placed at the corners of the board
 were used. Spot lights were chosen instead of typical points lights or sun
 lights to give consistent directional lighting during the camera spins. The four
@@ -481,13 +486,13 @@ compensate as per the Blender documentation \cite{light-power-docs}.
 
 The blend for this light was set to 0 as the cone fully encompasses the board.
 \subsubsection{Indirect}
-\label{sec:org750ed8f}
+\label{sec:org05fff56}
 There is minimal indirect lighting within the final scene (all models
 reflect some amount of light due to their texturing, however this is not a
 significant amount). Considering this a second scene was created which featured
 considerable indirect lighting. To accomplish this a disco ball was implemented.
 \paragraph{Disco ball}
-\label{sec:org64438b9}
+\label{sec:orga93bd61}
 Whats better than chess? That's right, disco chess! There is no better way to
 demonstrate indirect lighting that a giant ball of mirrors in the middle of the board.
 
@@ -537,9 +542,9 @@ some distance metric. The standard Euclidean distance is used here.
 \end{figure}
 \newpage
 With the disco ball texture and model complete a two red and blue lights were
-trained on the disco ball. The results can be seen with the \hyperref[sec:org2a31c55]{Render engine section}.
+trained on the disco ball. The results can be seen with the \hyperref[sec:orgcab3e82]{Render engine section}.
 \subsection{Render engine}
-\label{sec:org2a31c55}
+\label{sec:orgcab3e82}
 Blender offers two modern rendering engines, when working on a project it is
 important to keep in mind what engine is desired as to keep in mind the
 limitations of both. For this project \texttt{Eevee} was the chosen engine due to the
@@ -551,7 +556,7 @@ open source rendering engine designed specifically to model physically accurate
 light transportation.
 \newpage
 \subsubsection{Eevee}
-\label{sec:org8bf6a30}
+\label{sec:org23a6be1}
 Blenders \texttt{Eevee} is designed to be used within the view port for real time rendering previews
 \texttt{Eevee} must cut a lot of corners to achieve its speed. Although these
 approximations are physically based, the behaviour of light suffers. By default
@@ -604,7 +609,7 @@ triangles or pixels. Particles and fluid simulations, and terrain height map
 generation are common application of compute shaders.
 
 \subsubsection{Cycles}
-\label{sec:orge074d8a}
+\label{sec:orga01576c}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{Images/render_cycles_render-settings_light-paths_rays.png}
@@ -652,7 +657,7 @@ documentation \cite{blender-sampling}.\\
 Caustics are the optical phenomenon of light patterns forming on surfaces
 through reflections and refraction. These are notably difficult to calculate
 efficiently \footnote{There is nothing inherently difficult about caustics, any path tracer can
-render them. Instead it is a matter of convergance speed.} using a unidirectional path tracer as many rays will not
+render them. Instead it is a matter of convergence speed.} using a unidirectional path tracer as many rays will not
 collide with the object that should be focusing light. One solution to this is a
 technique called photon mapping. In photon mapping an initial pass of the scene
 is done using a forwards path tracer to follow the path of light rays as they
@@ -662,12 +667,12 @@ Cycles is significantly slower that \texttt{Eevee} (\texttt{1min vs 16 seconds} 
 frame renders). With adaptive sampling the number of samples conducted in less
 noisy areas is automatically resulting in a performance improvements.
 \paragraph{Thank you to Jack}
-\label{sec:org3aea543}
+\label{sec:orgabc6283}
 Due to significant hardware limitations for ray-tracing (\texttt{GTX 760, i5-4670}), a
 favour was called in with a good friend, Jack kindly lent their \texttt{RTX 2070}  for a
 cycles render. See \href{https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble\_cycles.mp4}{master/Videos/Marble\_cycles.mp4}.
 \subsubsection{Luxcore}
-\label{sec:orgba5a8c3}
+\label{sec:org6d89f0c}
 Another algorithm to calculate caustics is bidirectional path tracing. For each
 sample two paths are traced independently using forward and backwards path tracing.
 From this every vertex of one path can be connected directly to every vertex of
@@ -688,25 +693,30 @@ each other. This allows rays that are very close to form a path \cite{Caustic-Co
 bidirectional path tracing. This allows \texttt{Luxcore} to spend more time sampling
 bright areas of the image and thus rendering caustics with greater accuracy.
 However, this causes significantly more RAM usage. This was not enabled during
-the \texttt{Luxcore} render due to memory restrictions.
+the \texttt{Luxcore} render due to memory restrictions.\\
 
 \texttt{Luxcore} offers caching of caustics through the \texttt{PhotonGI caustic cache} option
 however this is only applicable the scene this static (with the exception of the
-camera).
+camera).\\
+
+\texttt{Luxcore} does not finish rendering a scene like \texttt{Eevee} and \texttt{Cycles}, instead
+the user must set halt conditions manually. For all renders by within this
+report the halt time was set to 10mins. This gave the engine ample time to
+converge.
 \subsubsection{Tragedy - 22:20, 01/June/2021}
-\label{sec:orgbf41d6c}
+\label{sec:org975f010}
 At 10:20pm on the first of June the PC that had been enslaved to rendering a
-Luxcore for more than 96 hours straight, died. It had been a good 8 years, but
-she finally gave out. Official cause of death is unknown but it suspected to be
-something to do with power delivery.\\
+\texttt{Luxcore} render for more than 96 hours straight, died. It had been a good 8
+years, but she finally gave out. Official cause of death is unknown but it
+suspected to be something to do with power delivery.\\
 
 A successful data recovery was conducted the next morning. Only the last 12
 frames were missing, they were rendered on another device. See
 \href{https://github.com/Jake-Moss/blender-chess/blob/master/Videos/disco\_luxcore.mp4}{master/Videos/disco\_luxcore.mp4 }
 \section{Python implementation}
-\label{sec:orgd4992a2}
+\label{sec:org8c77b35}
 \subsection{Processing games}
-\label{sec:org0c1b414}
+\label{sec:org27493ed}
 Reading and stepping through games is handled almost entirely by the chess
 library. No special considerations need to be made here. The minium working
 example below demonstrates all that is necessary to step through an entire game.
@@ -723,7 +733,7 @@ example below demonstrates all that is necessary to step through an entire game.
 \end{Verbatim}
 \end{Code}
 \subsection{Pairing problem}
-\label{sec:org86f6496}
+\label{sec:org588d425}
 During a game of chess there is nothing in between moves, simply one discrete
 board state after another. This is also how the chess library makes moves, by
 computing differences and tracking board states, while this is reliable and
@@ -735,14 +745,14 @@ pop at each move. However, this presented difficulties when implementing
 animations and special moves and animations. The code was generally cluttered
 and not up to an acceptable quality.
 \subsection{The solution}
-\label{sec:orgd80d6ac}
+\label{sec:orgca2ff9a}
 To remedy the mentioned problems a custom class was devised, and aptly name
 \texttt{CustomPiece}. This class acts as a generalised representation of a piece which
 is able to act upon itself and the Blender model it puppets. Stored within an
 unrolled 2d array with the index representing its position on the chess board
-(See \hyperref[sec:org67aeaaf]{Python implementation - Array Index to world space}) the object is able to
+(See \hyperref[sec:orgd755ba3]{Python implementation - Array Index to world space}) the object is able to
 move itself within the array while handling move and capture animations. Special
-move handling is generalised into the main loop, (See \hyperref[sec:orgdb959ac]{Python implementation -
+move handling is generalised into the main loop, (See \hyperref[sec:org0d3d549]{Python implementation -
 Special moves}).
 
 This design approach has clear advantages such as
@@ -761,7 +771,7 @@ An initial sketch of this class can be seen here \ref{class-sketch}.
 
 Implementation can be see here \ref{class-src}.
 \subsection{Array index to world space}
-\label{sec:org67aeaaf}
+\label{sec:orgd755ba3}
 \texttt{python-chess} provides great functionality to retrieve what square a move is
 coming from, and going to. Internally this is stored as a \texttt{int} representing
 each square in 1d array notation.
@@ -805,7 +815,7 @@ To convert form array indexing two simple expressions were used.
 Note the addition of \(0.5\) is to centre the pieces on the board squares in
 world space and will be excluded from further examples.
 \subsubsection{Abuse of this functionality}
-\label{sec:org5020aaa}
+\label{sec:org3bb3002}
 \begin{wrapfigure}[14]{r}{0.4\textwidth}
 \centering
 \includegraphics[width=0.35\textwidth]{Images/tikzit_image0.png}
@@ -826,7 +836,7 @@ back rank pieces.
 
 \newpage
 \subsection{Special moves}
-\label{sec:orgdb959ac}
+\label{sec:org0d3d549}
 Figure \ref{flowchart} shows the main loop logic, used to move the correct pieces.
 \begin{figure}[htbp]
 \centering
@@ -834,7 +844,7 @@ Figure \ref{flowchart} shows the main loop logic, used to move the correct piece
 \caption{\label{flowchart}Main loop logic}
 \end{figure}
 \subsubsection{Castling}
-\label{sec:org3e74d06}
+\label{sec:orgf64ec4b}
 Within standard chess there are only four castling possibilities, these are easy
 enough to check naively. This is the only section that limits this script to
 standard chess. To extend support to \texttt{chess960}, a bit-board mask of all the
@@ -856,7 +866,7 @@ that will be castled. See \href{https://python-chess.readthedocs.io/en/latest/co
 \end{Verbatim}
 \end{Code}
 \subsubsection{En passant}
-\label{sec:orgacfeb6f}
+\label{sec:org53dbbd7}
 The \texttt{python-chess} library makes handling en passant a breeze. The move is
 checked if it is an en passant first, then as only one square is possible of an
 en passant on any move that position is retrieved.
@@ -871,7 +881,7 @@ en passant on any move that position is retrieved.
 \end{Verbatim}
 \end{Code}
 \subsubsection{Promotion}
-\label{sec:org92f0463}
+\label{sec:orgcd52c65}
 Contained within a separate conditional is the promotion logic. This is handled
 separately from the rest of the logic as a move can be both a capture and a
 promotion.
@@ -895,12 +905,12 @@ been moved and that animation needs to finish before it can be hidden.
 Within the Blender view port the pieces that will be promoted too already exist
 at the right position, they are just not rendered until needed.
 \subsection{Animation}
-\label{sec:orgdb118ef}
+\label{sec:org6f7bd3a}
 \subsubsection{Key frames}
-\label{sec:org284a129}
+\label{sec:org7b4fd37}
 To animate an object within blender two key-frames must be inserted with
 different values for some property at varying times. Blender will then
-interpolate between them (See \hyperref[sec:orgd19e7a1]{Python implementation - Interpolation} for
+interpolate between them (See \hyperref[sec:org80af8e3]{Python implementation - Interpolation} for
 interpolation methods)
 
 Key-frames for all pieces are inserted every move. This is done to ensure
@@ -965,7 +975,7 @@ allows for ease fixed distance rotations.
 \caption{\label{camera-parent}Camera parent axis}
 \end{figure}
 \subsubsection{Interpolation}
-\label{sec:orgd19e7a1}
+\label{sec:org80af8e3}
 Blender offers 3 curves for interpolation between key-frames.
 \begin{itemize}
 \item Constant\\
@@ -986,7 +996,7 @@ preferred option for piece movement. However, linear was opted for the camera
 motion although a cubic Bézier curve would produce the same outcome as it made
 debugging slightly easier.
 \subsection{Reproducibility}
-\label{sec:org828722b}
+\label{sec:org6bb1616}
 This project was created used
 \begin{itemize}
 \item Blender \texttt{2.92}
@@ -999,7 +1009,7 @@ for the \texttt{\_\_future\_\_} module. Past \texttt{3.10} the \texttt{\_\_futur
 \url{https://github.com/niklasf/python-chess}
 \end{itemize}
 \subsubsection{Python environment}
-\label{sec:org52c69d1}
+\label{sec:org3ee23e6}
 Blender is distributed with its own python installation for consistency, however
 this means that installed python modules are not present
 \cite{blender-python-env}. To mitigate this the \texttt{-{}-target} flag for \texttt{pip install}
@@ -1014,13 +1024,199 @@ This ensures Blenders \texttt{Python} will has access to the required libraries 
 script to function.
 
 \section{Results}
-\label{sec:org439bb2a}
-\section{Evaluation}
-\label{sec:org11c71e4}
+\label{sec:org5d3399f}
+Animations referenced in this section are available on the \href{https://github.com/Jake-Moss/blender-chess/tree/master/Videos}{public GitHub repo.}
+They will be refereed to by their filenames\footnote{\texttt{higher/lower} within files names refers to the bit-rate of the assembled images.} and hyperlinked to. The still
+renders below may not appear within the animations as they may not be suitable
+to comparison, instead still renders from the same scenes are included to
+showcase these effects. The animations themselves and the appearance of these
+effects will be shown within the presentation.
+
+\begin{itemize}
+\item \href{https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble\_eevee\_higher.mp4}{\texttt{Marble\_eevee.mp4}}\\
+This is the complete product. Rendered using \texttt{Eevee}
+\item \href{https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble\_cycles\_higher.mp4}{\texttt{Marble\_cycles.mp4}}\\
+This is the path traced render of the final scene for comparison purposes. The
+scene and setup is identical other than the engine.
+\item \href{https://github.com/Jake-Moss/blender-chess/blob/master/Videos/disco\_luxcore.mp4}{\texttt{disco\_luxcore.mp4}}\\
+Disco chess was set to render long before this project was near completion.
+Although it is missing many key aspects and features its purpose is to
+demonstrate what bidirectional path tracing can do for caustics. \texttt{Luxcore} has
+a few notable incompatibilities with some aspects of the scene. This will be
+discussed in the presentation.
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{Images/confetti-eevee.png}
+\caption{\label{confetti-eevee}Confetti comparison Eevee}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{Images/confetti-cycles.png}
+\caption{\label{confetti-cycles}Confetti comparison Cycles}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.3\textwidth]{Images/confetti-eevee-1.png}
+\includegraphics[width=0.3\textwidth]{Images/confetti-eevee-2.png}
+\includegraphics[width=0.3\textwidth]{Images/confetti-eevee-3.png}
+\end{center}
+\caption{\label{confetti-eevee-close}Eevee confetti close up}
+\end{figure}
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.3\textwidth]{Images/confetti-cycles-1.png}
+\includegraphics[width=0.3\textwidth]{Images/confetti-cycles-2.png}
+\includegraphics[width=0.3\textwidth]{Images/confetti-cycles-3.png}
+\end{center}
+\caption{\label{confetti-cycles-close}Cycles confetti close up}
+\end{figure}
+\newpage
+It is clear from the close up figures that \texttt{Cycles} produces significantly more
+believable lighting due to its ability to accurately computer indirect lighting.
+\texttt{Eevee} tries its best with its approximations of shadows however it fails
+correctly illuminate the arch formed by two other pieces of confetti.\\
+
+Between the two intersection pieces on the right most image, \texttt{Cycles} correctly
+provides the indirect and ambient occlusion that should be present within such a
+formation. \texttt{Eevee} illuminates the whole purple face as if the pink piece was
+not present at all. The shadows cast by the pieces are also not present at
+all.\\
+
+\texttt{Eevee} also struggles to deal with the twist in the teal piece (left most
+image), \texttt{Cycles} correctly produces the indirect lighting and shadowing.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{Images/reflections-eevee.png}
+\caption{\label{reflections-eevee}Comparison Eevee}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{Images/reflections-cycles.png}
+\caption{\label{reflections-cycles}Comparison Cycles}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.3\textwidth]{Images/reflections-eevee-1.png}
+\includegraphics[width=0.3\textwidth]{Images/reflections-cycles-1.png}
+\end{center}
+\caption{\label{reflections-close}Eevee-Cycles reflections close up}
+\end{figure}
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.4\textwidth]{Images/reflections-eevee-2.png}
+\includegraphics[width=0.4\textwidth]{Images/reflections-cycles-2.png}
+\end{center}
+\caption{\label{shading-close}Eevee-Cycles shading close up}
+\end{figure}
+\newpage
+In Figure \ref{reflections-close} \texttt{Cycles}'s shadowing and reflectance create a
+sharper outline around the pawn. \texttt{Eevee} does not show this as the reflectance
+is an approximation using the depth buffer and the previous frame colour.\\
+
+On the space tile \texttt{Cycles} is able to correctly compute the reflection of the
+piece in a sharp manner as expected by a material with a mirror like finish.
+\texttt{Eevee}'s approximations once again cause the reflections to be blurred.\\
+
+Within the same figure the normal map of the marble texture causes the light to
+waver reflect in a non-uniform manner.\\
+
+In Figure \ref{shading-close} \texttt{Eevee} adds shadows without considering indirect
+lighting. \texttt{Cycles} produces a more realistic result. The intersection of all the
+shadows should not be the sum of its elements are the indirect lighting will
+illuminate it partially.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{Images/Disco kinda working.png}
+\caption{Cycles attempting disco chess}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{Images/mpv-shot0001.jpg}
+\caption{Luxcore succeeding at disco chess (Frame from \href{https://github.com/Jake-Moss/blender-chess/blob/master/Videos/disco\_luxcore.mp4}{disco\textsubscript{luxcore.mp4}})}
+\end{figure}
+
+Some of \texttt{Cycles} backwards rays do make it to the light source, unfortunately
+this is not enough accurate for the denoiser not to be fooled, it tires its best
+to clean up this noise and creates a faint pink glow on the board an pieces.\\
+
+Due to \texttt{Luxcore}'s bidirectional path tracing it does not suffer from this and
+is able to compute the caustics accurately and within a reasonable convergence
+time. However, the image is still exceptionally noisy and requires longer
+rendering time to reach the noise thresholds of \texttt{Cycles}.
+
+Animations were rendered to individual frames as PNGs, they were then assembled
+using \texttt{ffmpeg}.
+\begin{Code}
+\begin{Verbatim}[]
+\color[HTML]{383a42}ffmpeg -framerate \EFhn{24} -s 1920x1080 -i \%04d.png -vcodec libx264 -crf \EFhn{25} -pix\_fmt yuv420p ../Videos/\$\EFv{FILENAME}.mp4
+\end{Verbatim}
+\end{Code}
+\section{Self-evaluation}
+\label{sec:org43f0967}
+\subsection{Further additional marks}
+\label{sec:orgf699856}
+\begin{enumerate}
+\item \texttt{Report is well-written and concise}\\
+I believe this report is well-written and concise where possible while still covering many
+important topics. (1 Mark)
+\item \texttt{Report text and image examples support each other well}\\
+Images and diagrams were used in conjunction with text to better portray my
+ideas and understanding. Screenshots of texture configurations and the
+accompanying reasons are an example of this. (1 Mark)
+\item \texttt{An ample number of illustrative images are used to clearly demonstrate the
+    techniques}\\
+I have consistently used images to illustrate concepts and techniques used
+along with the results of texture generation, modelling, and rendering. (1 Mark)
+\item \texttt{It is evident from the report whether or not the techniques implemented
+    were appropriate for achieving the task}\\
+I believe I used appropriate techniques to create a visually appealing
+model. For example, \texttt{MIS, Screen Space Reflections, Adaptive Sample,
+    and Caustics} are relevant to the project and work to create a visually
+appealing animation. (1 Mark)
+\item \texttt{Techniques chosen were carefully considered and compared with alternatives
+    demonstrating insight into the design decision process}\\
+I chose techniques thought best demonstrate adequate knowledge while
+working towards a visually appealing  result. Many features and algorithms
+were consider which are more physically correct or such but were not in cost
+worthy or feasible. (1 Mark)
+\item \texttt{Report demonstrates significant work testing and applying techniques}\\
+Through this report I have shown significant testing throughout the
+application and comparison of techniques including differences between
+rendering engines and their effect on caustics. (1 Mark)
+\item \texttt{The report demonstrates that independent research extending beyond the specific course taught techniques have contributed to the final project in a meaningful way}\\
+I have delved into the source of Blender to find methods and algorithms used
+where I found documentation to be lacking. I found, read, and cited original
+papers detailing \texttt{GGX, MSGGX, Christensen-Burley model, and Random walk
+    model}. (2 Marks)
+\item \texttt{Large variety of techniques applied}\\
+I have used;
+\begin{itemize}
+\item Procedural texture and normal map generation using noise functions
+\item Particle systems and explosion
+\item Direct and indirect lighting
+\item Reflections, bloom, specular reflection and other lighting effects
+\item Advanced lighting techniques (caustics)
+\item A variety of rendering algorithms including rasterization, path tracing,
+and bidirectional path tracing
+\end{itemize}
+(2 Marks)
+\item \texttt{Final product looks visually appealing and complete}\\
+Throughout this project I always aimed to create something visually appealing.
+I believe I have excelled at this and made something I would display
+publicly with pride. (2 Marks)
+\end{enumerate}
 
 \newpage
 \section{Appendix}
-\label{sec:orge2ebcbe}
+\label{sec:org17f7b2d}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Scratchpad.pdf}
