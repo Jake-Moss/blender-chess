@@ -1,0 +1,52 @@
+#+TITLE: Slides
+#+author: Jake Moss - s46409665
+#+startup: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [presentation, 8pt]
+#+LATEX_HEADER: \usepackage{amsmath}
+#+latex_header: \usepackage{chessboard}
+#+latex_header: \ExplSyntaxOn %requires texlive 2020, in older system load expl3
+#+latex_header: \cs_new:Npn \getfieldnumber #1
+#+latex_header:  {
+#+latex_header:   \fp_eval:n { (\tl_tail:V #1 -1)*8 + \exp_args:Ne\int_from_alph:n{\tl_head:V #1} -1}
+#+latex_header:  }
+#+latex_header: \ExplSyntaxOff
+#+options: tasks:nil
+#+options: H:2 toc:nil
+* Python implementation
+** Processing games
+#+begin_src python :exports code
+import chess
+with open(filename) as pgn:
+    game = chess.pgn.read_game(pgn) # Parses pgn file
+    board = game.board()
+
+    for move in game.mainline_moves():
+        board.push(move) # Pushs the move to the move stack, this "makes" the move
+#+end_src
+* Luxcore
+** Incompatibility
+[[file:Images/luxcore fail-eevee.png]]
+** Incompatibility
+[[file:Images/luxcore fail.png]]
+** Incompatibility
+- Confetti texture
+- Check board texture
+- Marble texture
+** Checker texture fix
+:PROPERTIES:
+:BEAMER_envargs: [t]
+:END:
+*** Eevee
+:PROPERTIES:
+:BEAMER_col: 0.45
+:BEAMER_env: block
+:END:
+[[file:Images/checktexture-fix.png]]
+*** Luxcore
+:PROPERTIES:
+:BEAMER_col: 0.45
+:BEAMER_env: block
+:END:
+[[file:Images/checktexture-fix-luxcore.png]]
+** Comparison between Eevee and Cycles output.

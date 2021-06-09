@@ -1,0 +1,274 @@
+#+TITLE: Presentation
+* Python implementation
+** Processing games
+Reading and stepping through games is handled almost entirely by the chess
+library. No special considerations need to be made here. The minium working
+example below demonstrates all that is necessary to step through an entire game.
+
+#+name: python-chess-example
+#+begin_src python :exports code
+import chess
+with open(filename) as pgn:
+    game = chess.pgn.read_game(pgn) # Parses pgn file
+    board = game.board()
+
+    for move in game.mainline_moves():
+        board.push(move) # Pushs the move to the move stack, this "makes" the move
+#+end_src
+** Pairing problem
+During a game of chess there is nothing in between moves, simply one discrete
+board state after another. This is also how the chess library makes moves, by
+computing differences and tracking board states, while this is reliable and
+simple it does not play nice when games become continuous (animated).
+
+Initially this script also tracked the board state using a dictionary, with the
+square as the key, and corresponding blender object as the value, pushing and
+pop at each move. However, this presented difficulties when implementing
+animations and special moves and animations. The code was generally cluttered
+and not up to an acceptable quality.
+** The solution
+To remedy the mentioned problems a custom class was devised, and aptly name
+~CustomPiece~. This class acts as a generalised representation of a piece which
+is able to act upon itself and the Blender model it puppets. Stored within an
+unrolled 2d array with the index representing its position on the chess board
+(See [[*Array index to world space][Python implementation - Array Index to world space]]) the object is able to
+move itself within the array while handling move and capture animations. Special
+move handling is generalised into the main loop, (See [[*Special moves][Python implementation -
+Special moves]]).
+
+This design approach has clear advantages such as
+- Adheres to the ~Model-View-Controller~ design philosophy.
+- Array and object manipulation is not handled at any higher level than required.
+- Translation between the chess library interface and Blenders API is seamless.
+- Creates a unique object that pairs a Blender model to a ~python-chess~
+  ~PieceType~.
+However, the self-referential nature of objects manipulating the array their
+are stored in adds significantly to the complexity. Luckily the implementation is
+simple.
+
+An initial sketch of this class can be seen here [[ref:class-sketch]].
+
+Implementation can be see here [[ref:class-src]].
+** Array index to world space
+~python-chess~ provides great functionality to retrieve what square a move is
+coming from, and going to. Internally this is stored as a ~int~ representing
+each square in 1d array notation.
+
+#+LATEX: \begin{minipage}{0.5\textwidth}
+#+begin_src python :exports code
+Square = int
+SQUARES = [
+    A1, B1, C1, D1, E1, F1, G1, H1,
+    A2, B2, C2, D2, E2, F2, G2, H2,
+    A3, B3, C3, D3, E3, F3, G3, H3,
+    A4, B4, C4, D4, E4, F4, G4, H4,
+    A5, B5, C5, D5, E5, F5, G5, H5,
+    A6, B6, C6, D6, E6, F6, G6, H6,
+    A7, B7, C7, D7, E7, F7, G7, H7,
+    A8, B8, C8, D8, E8, F8, G8, H8,
+] = range(64)
+#+end_src
+#+LATEX: \end{minipage}
+#+begin_export latex
+\begin{minipage}{0.5\textwidth}
+\setchessboard{color=black,clearboard,showmover=false}
+\chessboard[
+pgfstyle=
+{[base,at={\pgfpoint{0pt}{-0.3ex}}]text},
+text= \fontsize{1.2ex}{1.2ex}\bfseries
+\sffamily\getfieldnumber\currentwq,
+markboard]
+\end{minipage}
+#+end_export
+\newpage
+#+name: array-working
+#+caption: Array representation ((~tl~) Source code, (~tr~) Chess board, (~b~) Overlaid)
+#+attr_latex: :width 0.5\textwidth
+#+attr_org: :width 200
+[[file:Images/array.png]]
+
+To convert form array indexing two simple expressions were used.
+\[x = (\text{INDEX mod } 8) + 0.5\]
+\[y = (\text{INDEX div } 8) + 0.5\][fn:4]
+Note the addition of \(0.5\) is to centre the pieces on the board squares in
+world space and will be excluded from further examples.
+*** Abuse of this functionality
+#+name: extended-array
+#+caption: Extended conversion
+#+attr_org: :width 200
+#+attr_latex: :float wrap :width 0.35\textwidth :placement [14]{r}{0.4\textwidth}
+[[file:Images/tikzit_image0.png]]
+
+While modulo will always produce a positive integer between \(0 \to 7\), integer
+division can result negative numbers and is not bounded. Using this the mapping
+can be extended past the board it was designed for.
+
+This provides an easy method to place captured piece after their animation. By
+storing each pieces initial position, and adding or subtracting \(16\) depending on
+the colour, pieces can be placed \(2\) rows behind their initial position.
+
+Two rows behind was preferable to the respective position on the other side of
+the board to avoid the inversion required so that the pawns would be in front of the
+back rank pieces.
+
+\newpage
+** Special moves
+Figure [[ref:flowchart]] shows the main loop logic, used to move the correct pieces.
+#+name: flowchart
+#+caption: Main loop logic
+#+attr_latex: :width \textwidth
+#+attr_org: :width 200
+[[file:flowchart.pdf]]
+*** Castling
+Within standard chess there are only four castling possibilities, these are easy
+enough to check naively. This is the only section that limits this script to
+standard chess. To extend support to ~chess960~, a bit-board mask of all the
+rooks with castling rights could be filtered to obtain the index of the rook
+that will be castled. See [[https://python-chess.readthedocs.io/en/latest/core.html?highlight=castl#chess.Board.castling_rights][the documentation.]]
+#+begin_src python :exports code
+if board.is_castling(move):
+    if board.turn: # White
+        if board.is_kingside_castling(move):
+            array[chess.H1].move(chess.F1)
+        else: # queen side
+            array[chess.A1].move(chess.D1)
+    else: # Black
+        if board.is_kingside_castling(move):
+            array[chess.H8].move(chess.F8)
+        else: # queen side
+            array[chess.A8].move(chess.D8)
+#+end_src
+*** En passant
+The ~python-chess~ library makes handling en passant a breeze. The move is
+checked if it is an en passant first, then as only one square is possible of an
+en passant on any move that position is retrieved.
+#+begin_src python :exports code
+    else: # standard case
+        if board.is_capture(move):# is en passant, great...
+            if board.is_en_passant(move):
+                array[board.ep_square].die() # NOTE, object is gc'ed
+            else: # its a normal capture
+                array[locTo].die() # NOTE, object is gc'ed
+#+end_src
+*** Promotion
+Contained within a separate conditional is the promotion logic. This is handled
+separately from the rest of the logic as a move can be both a capture and a
+promotion.
+#+begin_src python :exports code
+    array[locFrom].move(locTo) # NOTE, piece moves always
+
+    if move.promotion is not None:
+        array[locTo].keyframe_insert(data_path="location", index=-1)
+        array[locTo].hide_now() # hide_now unlinks within blender
+        pieceType = move.promotion # piece type promoting to
+        array[locTo] = CustomPiece(chess.Piece(pieceType, board.turn),\
+                                   SOURCE_PIECES[chess.piece_symbol(pieceType)],\
+                                   array, locTo) # shiny new object
+        array[locTo].show_now()
+#+end_src
+A new key-frame is inserted initially as the piece that will promote has already
+been moved and that animation needs to finish before it can be hidden.
+
+Within the Blender view port the pieces that will be promoted too already exist
+at the right position, they are just not rendered until needed.
+** Animation
+*** Key frames
+To animate an object within blender two key-frames must be inserted with
+different values for some property at varying times. Blender will then
+interpolate between them (See [[*Interpolation][Python implementation - Interpolation]] for
+interpolation methods)
+
+Key-frames for all pieces are inserted every move. This is done to ensure
+stationary pieces stay stationary. Every move the piece has \(10\) frames to
+complete its moving animation. Between each move there a \(3\) buffer to provide
+some separation between moves.
+
+In addition to piece animations, the camera also rotates at a rate of
+\(2^{\circ}\) per \(13\) frames.
+#+begin_src python :exports code
+        FRAME_COUNT = 0
+        keyframes(array) # intial pos
+        FRAME_COUNT += 10
+        for move in game.mainline_moves():
+            scene.frame_set(FRAME_COUNT)
+
+            make_move(board, move, array)
+            keyframes(array) # update blender
+
+            camera_parent.rotation_euler[2] += radians(2) #XYZ
+            camera_parent.keyframe_insert(data_path="rotation_euler", index=-1)
+
+            board.push(move) # update python-chess
+
+            FRAME_COUNT += 10
+            keyframes(array) # update blender
+            FRAME_COUNT += 3
+#+end_src
+
+While the camera's rotation is tired to the length of the game, in order to
+continue spinning while the remaining animations (confetti and captures) finish additional key frames
+are added. Confetti is conditionally added to the winning king. No confetti for a draw.
+#+begin_src python :exports code
+        confetti = bpy.data.collections["Board"].objects['Confetti source']
+        if board.outcome() is not None:
+            winner = board.outcome().winner
+            king_square = board.king(winner)
+            xTo, yTo = square_to_world_space(king_square)
+            confetti.location = Vector((xTo, yTo, 3))
+            bpy.data.particles["Confetti"].frame_start = FRAME_COUNT
+            bpy.data.particles["Confetti"].frame_end = FRAME_COUNT + 12
+
+        print(FRAME_COUNT)
+        for _ in range(5):
+            scene.frame_set(FRAME_COUNT)
+            camera_parent.rotation_euler[2] += radians(2) #XYZ
+            camera_parent.keyframe_insert(data_path="rotation_euler", index=-1)
+
+            FRAME_COUNT += 13
+#+end_src
+In order to move the camera with a fixed rotation and radius from the centre of
+the board the camera was made a child of a ~Empty Plain Axis~. Rotations and
+translations applied to the camera parent are also applied to the camera. This
+allows for ease fixed distance rotations.
+#+name: camera-parent
+#+caption: Camera parent axis
+#+attr_org: :width 200
+#+attr_latex: :width 0.5\textwidth
+[[file:Images/camera parent.png]]
+*** Interpolation
+Blender offers 3 curves for interpolation between key-frames.
++ Constant\\
+  Object value only objects on the last possible frame.
++ Linear\\
+  Object value has a changes linear between the key-frames to form piecewise
+  continuous curve.
++ Bézier\\
+  The object value is interpolated using a Bézier curve. Bézier curves are
+  parametric curves used in computer graphics to create smooth surfaces, or in
+  this case, a smooth function between two points.
+
+  Blender implements a forward differencing method for a cubic Bézier curve
+  evident from the source code cite:blender-source.
+By default Blender uses Bézier curve interpolation for all motions. This is the
+preferred option for piece movement. However, linear was opted for the camera
+motion although a cubic Bézier curve would produce the same outcome as it made
+debugging slightly easier.
+** Reproducibility
+This project was created used
+- Blender ~2.92~
+  [[https://www.blender.org/]]
+- Python ~3.9.5~ [fn:2]
+  [[https://www.python.org/]]
+- python-chess ~1.5.0~ [fn:1]
+  [[https://github.com/niklasf/python-chess]]
+*** Python environment
+Blender is distributed with its own python installation for consistency, however
+this means that installed python modules are not present
+cite:blender-python-env. To mitigate this the ~--target~ flag for ~pip install~
+can be used to install directly to the blender python environment
+cite:pip-install-man.
+#+begin_src bash :exports code
+pip install -t ~/.config/blender/2.92/scripts/modules chess
+#+end_src
+This ensures Blenders ~Python~ will has access to the required libraries for this
+script to function.
