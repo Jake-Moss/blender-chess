@@ -1,4 +1,4 @@
-% Created 2021-06-09 Wed 11:19
+% Created 2021-06-09 Wed 13:07
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation, 8pt]{beamer}
 \usepackage[utf8]{inputenc}
@@ -6,13 +6,6 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{amsmath}
-\usepackage{chessboard}
-\ExplSyntaxOn %requires texlive 2020, in older system load expl3
-\cs_new:Npn \getfieldnumber #1
-{
-\fp_eval:n { (\tl_tail:V #1 -1)*8 + \exp_args:Ne\int_from_alph:n{\tl_head:V #1} -1}
-}
-\ExplSyntaxOff
 
 % features: (embed-files embed-tangled acronym underline par-sep image engraved-code-setup engraved-code)
 
@@ -114,10 +107,10 @@
 \usetheme{default}
 \author{Jake Moss - s46409665}
 \date{\today}
-\title{Slides}
+\title{Blender chess animation}
 \hypersetup{
  pdfauthor={Jake Moss - s46409665},
- pdftitle={Slides},
+ pdftitle={Blender chess animation},
  pdfkeywords={},
  pdfsubject={},
  pdfcreator={Emacs 28.0.50 (Org mode 9.5)}, 
@@ -125,41 +118,61 @@
 \begin{document}
 
 \maketitle
+\section{Source code}
+\label{sec:orgb6968e7}
+\begin{frame}[label={sec:orgfd678ee}]{Source code}
+\url{https://github.com/Jake-Moss/blender-chess}
+All source code is available at the repository above.
+\end{frame}
 \section{Python implementation}
-\label{sec:org59446c8}
-\begin{frame}[label={sec:orgd7dac54},fragile]{Processing games}
- \begin{Code}
-\begin{Verbatim}[]
-\color[HTML]{383a42}\EFk{import} chess
-\EFk{with} \EFb{open}(filename) \EFk{as} \EFv{pgn}:
-    game = chess.pgn.read\_game(pgn) \EFcd{\# }\EFct{Parses pgn file}
-    \EFv{board} = game.board()
+\label{sec:orge6d4baf}
+\begin{frame}[label={sec:org536a68d}]{Games}
+\begin{itemize}
+\item Vladimir Kramnik vs Garry Kasparov 2001
+\url{https://www.chessgames.com/perl/chessgame?gid=1210753}
+\end{itemize}
 
-    \EFk{for} move \EFk{in} game.mainline\_moves():
-        board.push(move) \EFcd{\# }\EFct{Pushs the move to the move stack, this "makes" the move}
+
+
+\begin{itemize}
+\item Magnus Carlsen Plays Bongcloud Opening Against Hikaru Nakamura and They Laugh While They Are Playing
+\url{https://www.youtube.com/watch?v=zVCst6vyV80}
+\end{itemize}
+\end{frame}
+\begin{frame}[label={sec:org9485e80},fragile]{Limitations}
+ \begin{center}
+\includegraphics[width=0.3\textwidth]{Images/Possible-castling-moves.png}
+\end{center}
+\alert{Not} compatible with \texttt{chess960}
+\begin{Code}
+\begin{Verbatim}[]
+\color[HTML]{383a42}\EFk{if} board.is\_castling(move):
+    \EFk{if} board.turn: \EFcd{\# }\EFct{White}
+        \EFk{if} board.is\_kingside\_castling(move):
+            array[chess.H1].move(chess.F1)  \EFcd{\# }\EFct{move rook}
+        \EFk{else}: \EFcd{\# }\EFct{queen side}
+            array[chess.A1].move(chess.D1)  \EFcd{\# }\EFct{move rook}
+    \EFk{else}: \EFcd{\# }\EFct{Black}
+        \EFk{if} board.is\_kingside\_castling(move):
+            array[chess.H8].move(chess.F8)  \EFcd{\# }\EFct{move rook}
+        \EFk{else}: \EFcd{\# }\EFct{queen side}
+            array[chess.A8].move(chess.D8)  \EFcd{\# }\EFct{move rook}
 \end{Verbatim}
 \end{Code}
 \end{frame}
 \section{Luxcore}
-\label{sec:org4dd6641}
-\begin{frame}[label={sec:org4da1645}]{Incompatibility}
+\label{sec:org466f244}
+\begin{frame}[label={sec:org4099751}]{Incompatibility}
 \begin{center}
 \includegraphics[width=.9\linewidth]{Images/luxcore fail-eevee.png}
 \end{center}
 \end{frame}
-\begin{frame}[label={sec:orgd515b4a}]{Incompatibility}
+\begin{frame}[label={sec:orgb1247dc}]{Incompatibility}
 \begin{center}
 \includegraphics[width=.9\linewidth]{Images/luxcore fail.png}
 \end{center}
 \end{frame}
-\begin{frame}[label={sec:org5813c26}]{Incompatibility}
-\begin{itemize}
-\item Confetti texture
-\item Check board texture
-\item Marble texture
-\end{itemize}
-\end{frame}
-\begin{frame}[label={sec:org476e136}]{Checker texture fix}
+\begin{frame}[label={sec:orgf2f1443}]{Checker texture fix}
 \begin{columns}
 \begin{column}{0.45\columnwidth}
 \begin{block}{Eevee}
@@ -176,5 +189,11 @@
 \end{block}
 \end{column}
 \end{columns}
+\end{frame}
+\begin{frame}[label={sec:orga69ccad}]{Disco chess!}
+\url{https://github.com/Jake-Moss/blender-chess/blob/master/Videos/disco\_luxcore.mp4}
+\end{frame}
+\begin{frame}[label={sec:org5613876}]{Comparison between Eevee and Cycles output.}
+\url{https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble\_stacked\_higher.mp4}
 \end{frame}
 \end{document}

@@ -1,38 +1,46 @@
-#+TITLE: Slides
+#+TITLE: Blender chess animation
 #+author: Jake Moss - s46409665
 #+startup: beamer
 #+LaTeX_CLASS: beamer
 #+LaTeX_CLASS_OPTIONS: [presentation, 8pt]
 #+LATEX_HEADER: \usepackage{amsmath}
-#+latex_header: \usepackage{chessboard}
-#+latex_header: \ExplSyntaxOn %requires texlive 2020, in older system load expl3
-#+latex_header: \cs_new:Npn \getfieldnumber #1
-#+latex_header:  {
-#+latex_header:   \fp_eval:n { (\tl_tail:V #1 -1)*8 + \exp_args:Ne\int_from_alph:n{\tl_head:V #1} -1}
-#+latex_header:  }
-#+latex_header: \ExplSyntaxOff
 #+options: tasks:nil
 #+options: H:2 toc:nil
+* Source code
+** Source code
+[[https://github.com/Jake-Moss/blender-chess]]
+All source code is available at the repository above.
 * Python implementation
-** Processing games
-#+begin_src python :exports code
-import chess
-with open(filename) as pgn:
-    game = chess.pgn.read_game(pgn) # Parses pgn file
-    board = game.board()
+** Games
+- Vladimir Kramnik vs Garry Kasparov 2001
+  [[https://www.chessgames.com/perl/chessgame?gid=1210753]]
+\\
 
-    for move in game.mainline_moves():
-        board.push(move) # Pushs the move to the move stack, this "makes" the move
+
+- Magnus Carlsen Plays Bongcloud Opening Against Hikaru Nakamura and They Laugh While They Are Playing
+  [[https://www.youtube.com/watch?v=zVCst6vyV80]]
+** Limitations
+#+attr_latex: :width 0.3\textwidth
+[[file:Images/Possible-castling-moves.png]]
+*Not* compatible with ~chess960~
+#+begin_src python :exports code
+if board.is_castling(move):
+    if board.turn: # White
+        if board.is_kingside_castling(move):
+            array[chess.H1].move(chess.F1)  # move rook
+        else: # queen side
+            array[chess.A1].move(chess.D1)  # move rook
+    else: # Black
+        if board.is_kingside_castling(move):
+            array[chess.H8].move(chess.F8)  # move rook
+        else: # queen side
+            array[chess.A8].move(chess.D8)  # move rook
 #+end_src
 * Luxcore
 ** Incompatibility
 [[file:Images/luxcore fail-eevee.png]]
 ** Incompatibility
 [[file:Images/luxcore fail.png]]
-** Incompatibility
-- Confetti texture
-- Check board texture
-- Marble texture
 ** Checker texture fix
 :PROPERTIES:
 :BEAMER_envargs: [t]
@@ -49,4 +57,7 @@ with open(filename) as pgn:
 :BEAMER_env: block
 :END:
 [[file:Images/checktexture-fix-luxcore.png]]
+** Disco chess!
+[[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/disco_luxcore.mp4]]
 ** Comparison between Eevee and Cycles output.
+[[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble_stacked_higher.mp4]]

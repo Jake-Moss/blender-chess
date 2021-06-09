@@ -26,24 +26,24 @@
 This project aims to demonstrate a sufficient knowledge of computer graphics
 techniques and implementations through the creation of a visually appealing
 chess game animation tool. This was accomplished using Blender, and its python
-scripting API.
+scripting API (application interface).
 
 This project utilises two tools to create the chess animation
 + Blender\\
   Blender had a large appeal due to is its extensibility through ~Python~ for
   this project The exposed API allows its users to  script typical actions, and develop add-ons in a familiar
-  and standard environment. Part of this scripting API allows the user to add
+  and standard environment. The scripting API allows the user to add
   and remove objects, insert key-frames, and change the properties of an object,
   anything a user can do with a mouse and keyboard, is able to be configured
-  programmatically. This allows Blender to be used a front end to any ~Python~
+  programmatically. This allows Blender to be used as a front end to any ~Python~
   or ~C++~ program.
 + ~python-chess~ library\\
   The ~python-chess~ library is a chess library for python with move validation,
   generation, and ~PGN~ (Portable Game Notation, the most common file format
-  for chess games) parsing. This library is designed to be able to function as
+  for chess games) parsing. This library is designed to function as
   back-end, making it perfect to use in conjunction with Blender.
 * The plan
-During the proposal the plan was to create an interactive, real time chess
+During the proposal, the plan was to create an interactive, real time chess
 board, however this was changed as the techniques and concepts would be severely
 limited. Blender with python scripting was a perfect compromise.
 * Blender implementation
@@ -61,14 +61,14 @@ Throughout this project, procedural texture and shading generation using nodes
 was used instead of the traditional texture wrapping using UV mapping in order
 to give objects consistent and appealing surfaces. This provides two relevant
 benefits;
-+ Tweaking textures and shading doesn't require an any more work than changing
++ Changing textures and shading requires no additional work than adjusting
   values on the respective node.
 + Textures can be applied to any model without fitting issues, i.e. repetition
   and resolution.
 *** Shaders
-A shader is a program, typically run on the GPU, to computer the colour of a
-group or individual pixel. These shaders describe the lighting interactions of
-objects or surfaces, such as reflection, refractions, and absorption.
+A shader is a program, typically run on the GPU, to compute the colour of an
+individual or group of pixels. These shaders describe the lighting interactions
+of objects or surfaces, such as reflection, refractions, and absorption.
 **** Principled BSDF
 A ~BSDF~ (Bidirectional Scattering Distribution Function) describes how light
 scatters on a surface. In computer graphics, computing a highly detailed
@@ -83,7 +83,7 @@ scattering of the microsurface (at distance). cite:ggx-paper
 #+attr_latex: :width 0.5\textwidth
 [[file:Images/macro vs micro.png]]
 
-Blenders implementation breaks down this problem down into two separate functions
+Blenders implementation breaks down this down into two separate functions
 by assuming that the microsurface can be adequately described using a microfacet
 distribution function and a shadowing-masking function.
 
@@ -92,8 +92,8 @@ the subsurface methods.
  + Distribution[fn:3]
    - GGX \\
      ~GGX~ is a ~BRDF~ (bidirectional reflection distribution function) which
-     aims to be a faster than its alternative ~Multiple-scattering GGX~ at the
-     cost  of physical accuracy.
+     aims to be a faster than its alternative ~Multiple-scattering GGX~ however
+     at the cost  of physical accuracy.
      The ~MDF~ describes the distribution of microsurface normals *m* (Figure
      [[ref:micro-vs-macro]]) while the shadow masking function describes what fraction of
      the microsurface normals *m* are visible. cite:ggx-paper
@@ -103,8 +103,8 @@ the subsurface methods.
      conservation in some areas cite:principled-bsdf-docs.
 
    - Multiple-scattering GGX \\
-     Almost all popular parametric ~BSDF~'s only consider single reflection
-     to account for self-shadowing but omit outgoing light that scatters
+     Almost all popular parametric ~BSDF~'s consider only single reflection
+     to account for self-shadowing and omit outgoing light that scatters
      multiple times between microfacets. Omitting outgoing light  breaks
      conservation of energy and leads to dark patches within rough surfaces
      cite:ms-ggx-paper.
@@ -126,15 +126,16 @@ the subsurface methods.
      estimates the performance penalty to be approximately 3% at the time of
      implementation cite:blender-issue-tracker.
 
- + Subsurface Scattering Method
-   Subsurface scattering when light passes through an object that is normally
-   opaque. Described by a ~BSSRDF~ (bidirectional subsurface scattering
-   reflectance distribution function)
+ + Subsurface Scattering Method\\
+   Subsurface scattering is when light penetrates into an object that is normally
+   opaque and interacts and exits the material at a different point. Described
+   by a ~BSSRDF~ (bidirectional subsurface scattering reflectance distribution
+   function)
    - Christensen-Burley \\
      The ~Christensen-Burley~ method is an approximation of a physically based
      volumetric scattering system with faster evaluation and efficiency cite:Christensen-Burley.
    - Random walk \\
-     Apposed to the approximations use the in the ~Christensen-Burley~ model,
+     Opposed to the approximations use the in the ~Christensen-Burley~ model,
      the ~Random walk~ modelling uses true volumetric scattering inside the mesh.
      Due to this the model does not perform well when the mesh is not closed.
      This accuracy comes at a cost of rendering time (actually performance hit is largely
@@ -145,7 +146,7 @@ the subsurface methods.
     its better performance.
 
 All renders within this report have ~Multiple-scattering GGX~ enabled as the
-benefit was need to outweigh the cost.
+benefit outweighed the cost.
 
 The ~Principled BSDF~ shader is a combination of multiple layers into a single
 node. This is done for ease of use.
@@ -178,13 +179,13 @@ object  a ~Screw~ modifier was applied.
 [[file:Images/pawn model.png]]
 #+end_center
 The notable changes from the default settings is the lowering of the steps from
-\(16 \to 10\) and disabling ~Smooth Shading~. This was a stylistic choice as it
-was believed that the low polygon look would better demonstration reflections and
-the planned indirect lighting (See [[*Disco ball][Lighting - Disco Ball]]).\\
+\(16 \to 10\) and disabling ~Smooth Shading~. This was a stylistic choice as the
+low polygon look would better demonstration reflections and the planned indirect
+lighting (See [[*Disco ball][Lighting - Disco Ball]]).\\
 
 To model the knight, 3 separate reference images where used. The base was
 constructed in a similar manner to the other pieces. The head was modelled
-manually (read painstakingly).
+manually.
 
 #+latex: \begin{figure}[htbp]
 #+begin_center
@@ -201,8 +202,9 @@ manually (read painstakingly).
 #+latex: \caption{Knight reference images, \href{https://imgur.com/a/Pg9WYII}{(Source)}}
 #+latex: \end{figure}
 
-Additionally ico-spheres where added  to piece some pieces additional detail.
-The finally piece models appear as below.
+Additionally ico-spheres where added to some pieces for additional detail.\\
+
+The final piece models appear as below.
 #+caption: Final models
 #+attr_org: :width 200
 #+attr_latex: :width 0.5\textwidth
@@ -214,7 +216,7 @@ The finally piece models appear as below.
 **** Chess board
 The chess board model is a simple rectangular based prism with dimensions ~8m x
 8m x 0.4m~. The checker board texture comes from the ~Checker Texture~, with
-~scale=8.0~ and black and white colours. This texture output is then feed into
+~scale=8.0~ and black and white colours. This texture output is fed into
 the base colour input of a ~Principled BSDF~ shader node.\\
 
 #+name: checker-texture
@@ -223,7 +225,7 @@ the base colour input of a ~Principled BSDF~ shader node.\\
 #+attr_latex: :width 350pt
 [[file:Images/checker texture.png]]
 
-Within world space the board was positioned in the positive, positive quadrant
+Within world space the board was positioned in the positive positive quadrant
 such that the very bottom left handle corner of the board was at ~0,0~
 with each squares dimensions as ~1m x 1mx~. This positioning becomes important
 in [[*Array index to world space][Python implementation - Array index to world space]].
@@ -242,12 +244,12 @@ To accomplish this texture layered Perlin noise was used. The first set of
 switch derives its coordinators from the ~Texture Coordinate~ node which is set
 to use the mesh [fn:6]. The ~Mapping~ node is extraneous in this example, simply
 used to move the Perlin noise map around. The second layer of Perlin noise uses
-the already nosy surface to create the dark patches marble typically feature.
+the already nosy surface to create the dark patches marble typically features.
 The colour ramp is used to brighten and shade the darker patches of noise. This
 colour is then used as the base colour for the ~BSDF~ shader. To give this
 texture some depth the colour output of the ramp is used to create a normal map.
-Colour data (yellow node) is used a vector input can yield unexpected results.
-To remedy this the colour data is first past through a ~Bump~ node as the height
+Colour data (yellow node), when used as a vector input can yield unexpected results.
+To remedy this the colour data is first passed through a ~Bump~ node as the height
 data and then fed into the ~BSDF~ shader.
 #+name: marble-texture
 #+caption: Complete marble texture
@@ -267,18 +269,18 @@ data and then fed into the ~BSDF~ shader.
 \newpage
 ** Particle effects
 *** Explosions
-Initially an explosion was planned an each piece capture as a way to add some
+Initially an explosion was planned on each piece capture as a way to add some
 flare. However this was quickly scrapped as the additional baking and rendering time
-were deemed obscene. A demo render featuring a smoke cloud was created and can
+were deemed too costly. A demo render featuring a smoke cloud was created and can
 be viewed here [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/smoke.mp4][master/Videos/smoke.mp4]].
 *** Confetti
 As an alternative to explosions, a confetti shower on the winning king (only
-checkmates deserve confetti) was added instead.\\
+checkmates received confetti) was added instead.\\
 
-The confetti is still an explosion but with the outgoing particles are set to a
+The confetti is still an explosion but with the outgoing particles set to a
 collection of "confetti's". The source of the explosion is a upwards facing
 dome, this gives the confetti a even spread. The particles are set to have
-randomised, size, rotation, angular velocity, normal velocity. To achieve the
+randomised, size, rotation, angular velocity, and normal velocity. To achieve the
 slow fall effect the effective gravity of the particle simulation was lowered to
 38% its normal strength. Each confetti has a texture with ~Roughness 1.0~ and
 varying base colours.
@@ -303,9 +305,9 @@ A sample render can be seen below.
 \newpage
 ** Lighting
 The power of Blender lights is measured in ~Watts~, however this is not the same
-wattage that consumer lights bulbs are rated in. Blenders light power is rater
+wattage consumer lights bulbs are rated in. Blenders light power is rated
 in radiant flux, which is the measure of radiant energy emitted per unit time
-apposed to consumer light bulb which are rated in lumens, or luminous flux
+opposed to consumer light bulb which are rated in lumens, or luminous flux
 cite:radiant-flux,luminous-flux. Luminous flux differs from radiant flux in that
 luminous flux is adjusted to the varying sensitivity of the human eye.
 cite:luminous-flux
@@ -328,8 +330,8 @@ cite:luminous-flux
 |--------------------------+---------+------------------------|
 
 *** Direct
-To directly light the scene four spot lights placed at the corners of the board
-were used. Spot lights were chosen instead of typical points lights or sun
+To directly light the scene four spot lights were placed at the corners of the
+board. Spot lights were chosen instead of typical point lights or sun
 lights to give consistent directional lighting during the camera spins. The four
 lights are set to track the centre of the chess board.
 #+caption: Spot light positions
@@ -359,14 +361,14 @@ shader node is set to 0. This alone didn't make a very convincing disco ball, in
 addition to the ~Roughness~, the following values were tweaked,
 - ~Metalic 1.0~\\
   This change made the ball most disco like as it gives a fully specular
-  reflection tined with the base colour without diffuse reflection or
+  reflection tinted with the base colour without diffuse reflection or
   transmission.
 - ~Specular 1.0~\\
   While the ~Matallic~ value is responsible for the majority of the specular
   reflection, this change gave the ball a halo like glow.
 - ~Base colour~\\
-  With the two previous changes the disco ball appears too uniform and reflective, some
-  faces appear completely blown out with no variance between them. To remedy
+  With the two previous changes the disco ball appeared too uniform and reflective, some
+  faces appeared completely blown out with no variance between them. To remedy
   this a ~Voronoi~ noise texture's colour output was piped into a colour ramp
   (this is done to avoid the *very* pink look  the ~Voronoi~ noise produces).
 
@@ -375,7 +377,7 @@ addition to the ~Roughness~, the following values were tweaked,
 #+attr_latex: :width 0.3\textwidth
 [[file:Images/render_shader-nodes_textures_voronoi_smoothness-color-zero.png]]
 A ~Voronoi~ noise texture is as procedural [[https://en.wikipedia.org/wiki/Worley_noise][Worley noise]] function evaluated at the texture
-coordinate. The patterns are generate by randomly distributing points. From
+coordinate. The patterns are generated by randomly distributing points. From
 these points a region is extended, the bounds of this region is determined by
 some distance metric. The standard Euclidean distance is used here.
 
@@ -399,10 +401,10 @@ With the disco ball texture and model complete a two red and blue lights were
 trained on the disco ball. The results can be seen with the [[*Render engine][Render engine section]].
 ** Render engine
 Blender offers two modern rendering engines, when working on a project it is
-important to keep in mind what engine is desired as to keep in mind the
-limitations of both. For this project ~Eevee~ was the chosen engine due to the
-significantly lower render times than ~Cycles~, however renders using both
-engines were still made in order to compare them.\\
+important to keep in mind what engine will be used for the finally render in ord
+to account for the limitations of both. For this project ~Eevee~ was the chosen
+engine due to the significantly lower render times than ~Cycles~, however
+renders using both engines were still made in order to compare them.\\
 
 This project also made use of third engine, ~Luxcore~. [[https://luxcorerender.org/][~Luxcore~]] is a free and
 open source rendering engine designed specifically to model physically accurate
@@ -410,7 +412,7 @@ light transportation.
 \newpage
 *** Eevee
 Blenders ~Eevee~ is designed to be used within the view port for real time rendering previews
-~Eevee~ must cut a lot of corners to achieve its speed. Although these
+~Eevee~ must cut corners to achieve this speed. Although these
 approximations are physically based, the behaviour of light suffers. By default
 mirrors do not function (without explicitly enabling) and caustics are not present at all.\\
 
@@ -430,12 +432,12 @@ rasterisation engine.
       smaller interpolated points. This is useful to dynamically add or subtract
       detail from a polygon mesh.
    c. (Optional) The geometry shader is used to conduct layered rendering which is
-      useful when cube based shadow mapping or rendering cube enrichment map
-      without having to rend the entire scene multiple times.
+      useful when cube based shadow mapping or rendering a cube enrichment map
+      without having to render the entire scene multiple times.
 2. Vertex post-processing - output from the previous stages is collected
    and prepared for the following stages.
    a. In Transformation Feedback the output of the Vertex Processing stages is
-      recorded and place into buffer objects, preserving the post-transformation
+      recorded and placed into buffer objects, preserving the post-transformation
       rendering state such that it can be resubmitted to various processes.
    b. Primitive Assembly prepares the primitives for the rasterizer by dividing
       them into a sequence of triangles and stored in an efficient method.
@@ -449,7 +451,7 @@ rasterisation engine.
    surfaces ~BSDF~.
 5. Per-sample operations are used to cull fragments that are not visible, and
    determine the transparency.
-Outside of this pipeline (concurrently) are compute shaders, often these are
+Outside of this pipeline (concurrently) are compute shaders, often
 used to compute arbitrary information, i.e. tasks not directly related to drawing
 triangles or pixels. Particles and fluid simulations, and terrain height map
 generation are common application of compute shaders.
@@ -472,11 +474,11 @@ to be either cite:design-goals.\\
 In backwards path tracers the paths are generated starting from the camera. They
 are bounded around the scene until encountering the light source they "originated" from.
 This is considered an efficient method for direct lighting as a ray will always
-yield some result opposed the forward path tracing where many light rays may
+yield some result opposed to the forward path tracing where many light rays may
 never reach the camera.\\
 
 Cycles offers two integrators, ~Path Tracing~ and ~Branched Path Tracing~. Where
-~Branched Path Tracing~  differs is that a pure path tracer, each bounce of the
+~Branched Path Tracing~  differs is that as a pure path tracer, each bounce of the
 light ray bounces in one direction and will pick one light to receive lighting
 from, while a ~Branched Path Tracing~ will split the path for the first bounce
 into multiple rays and sample from multiple lights. Naturally this makes
@@ -508,10 +510,10 @@ interact with glossy and refractive objects.\\
 
 Cycles is significantly slower that ~Eevee~ (~1min vs 16 seconds~ for some single
 frame renders). With adaptive sampling the number of samples conducted in less
-noisy areas is automatically resulting in a performance improvements.
+noisy areas is automatically results in a performance improvements.
 **** Thank you to Jack
 Due to significant hardware limitations for ray-tracing (~GTX 760, i5-4670~), a
-favour was called in with a good friend, Jack kindly lent their ~RTX 2070~  for a
+favour was called in with a good friend, Jack kindly lent his ~RTX 2070~  for a
 cycles render. See [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble_cycles.mp4][master/Videos/Marble\under{}cycles.mp4]].
 *** Luxcore
 Another algorithm to calculate caustics is bidirectional path tracing. For each
@@ -537,8 +539,8 @@ However, this causes significantly more RAM usage. This was not enabled during
 the ~Luxcore~ render due to memory restrictions.\\
 
 ~Luxcore~ offers caching of caustics through the ~PhotonGI caustic cache~ option
-however this is only applicable the scene this static (with the exception of the
-camera).\\
+however this is only applicable when the scene this static (with the exception of the
+camera) and traditional path tracing is used.\\
 
 ~Luxcore~ does not finish rendering a scene like ~Eevee~ and ~Cycles~, instead
 the user must set halt conditions manually. For all renders by within this
@@ -546,8 +548,7 @@ report the halt time was set to 10mins. This gave the engine ample time to
 converge.
 *** Tragedy - 22:20, 01/June/2021
 At 10:20pm on the first of June the PC that had been enslaved to rendering a
-~Luxcore~ render for more than 96 hours straight, died. It had been a good 8
-years, but she finally gave out. Official cause of death is unknown but it
+~Luxcore~ render for more than 96 hours straight, died. Official cause of death is unknown but it
 suspected to be something to do with power delivery.\\
 
 A successful data recovery was conducted the next morning. Only the last 12
@@ -578,7 +579,7 @@ simple it does not play nice when games become continuous (animated).
 Initially this script also tracked the board state using a dictionary, with the
 square as the key, and corresponding blender object as the value, pushing and
 pop at each move. However, this presented difficulties when implementing
-animations and special moves and animations. The code was generally cluttered
+animations and special moves. The code was generally cluttered
 and not up to an acceptable quality.
 ** The solution
 To remedy the mentioned problems a custom class was devised, and aptly name
@@ -641,7 +642,7 @@ markboard]
 #+attr_org: :width 200
 [[file:Images/array.png]]
 
-To convert form array indexing two simple expressions were used.
+To convert from array indexing two simple expressions were used.
 \[x = (\text{INDEX mod } 8) + 0.5\]
 \[y = (\text{INDEX div } 8) + 0.5\][fn:4]
 Note the addition of \(0.5\) is to centre the pieces on the board squares in
@@ -654,10 +655,10 @@ world space and will be excluded from further examples.
 [[file:Images/tikzit_image0.png]]
 
 While modulo will always produce a positive integer between \(0 \to 7\), integer
-division can result negative numbers and is not bounded. Using this the mapping
+division can result in negative numbers and is not bounded. Using this the mapping
 can be extended past the board it was designed for.
 
-This provides an easy method to place captured piece after their animation. By
+This provides an easy method to place captured pieces after their animation. By
 storing each pieces initial position, and adding or subtracting \(16\) depending on
 the colour, pieces can be placed \(2\) rows behind their initial position.
 
@@ -694,7 +695,7 @@ if board.is_castling(move):
 #+end_src
 *** En passant
 The ~python-chess~ library makes handling en passant a breeze. The move is
-checked if it is an en passant first, then as only one square is possible of an
+checked if it is an en passant first, then as only one square is possible for an
 en passant on any move that position is retrieved.
 #+begin_src python :exports code
     else: # standard case
@@ -721,20 +722,21 @@ promotion.
         array[locTo].show_now()
 #+end_src
 A new key-frame is inserted initially as the piece that will promote has already
-been moved and that animation needs to finish before it can be hidden.
+been moved and the animation needs to finish before it can be hidden.
 
-Within the Blender view port the pieces that will be promoted too already exist
-at the right position, they are just not rendered until needed.
+Within the Blender view port the pieces that will be promoted to already exist
+at the right position. This can cause double plaining, however they are not
+rendered until needed.
 ** Animation
 *** Key frames
 To animate an object within blender two key-frames must be inserted with
-different values for some property at varying times. Blender will then
+different values for some property at varying times. Blender will
 interpolate between them (See [[*Interpolation][Python implementation - Interpolation]] for
 interpolation methods)
 
 Key-frames for all pieces are inserted every move. This is done to ensure
-stationary pieces stay stationary. Every move the piece has \(10\) frames to
-complete its moving animation. Between each move there a \(3\) buffer to provide
+stationary pieces stay stationary. For every move the piece has \(10\) frames to
+complete its moving animation. Between each move there is a \(3\) frame buffer to provide
 some separation between moves.
 
 In addition to piece animations, the camera also rotates at a rate of
@@ -759,7 +761,7 @@ In addition to piece animations, the camera also rotates at a rate of
             FRAME_COUNT += 3
 #+end_src
 
-While the camera's rotation is tired to the length of the game, in order to
+While the camera's rotation is tied to the length of the game, in order to
 continue spinning while the remaining animations (confetti and captures) finish additional key frames
 are added. Confetti is conditionally added to the winning king. No confetti for a draw.
 #+begin_src python :exports code
@@ -794,7 +796,7 @@ Blender offers 3 curves for interpolation between key-frames.
 + Constant\\
   Object value only objects on the last possible frame.
 + Linear\\
-  Object value has a changes linear between the key-frames to form piecewise
+  Object value changes linearly between the key-frames to form piecewise
   continuous curve.
 + Bézier\\
   The object value is interpolated using a Bézier curve. Bézier curves are
@@ -804,8 +806,8 @@ Blender offers 3 curves for interpolation between key-frames.
   Blender implements a forward differencing method for a cubic Bézier curve
   evident from the source code cite:blender-source.
 By default Blender uses Bézier curve interpolation for all motions. This is the
-preferred option for piece movement. However, linear was opted for the camera
-motion although a cubic Bézier curve would produce the same outcome as it made
+preferred option for piece movement. However, linear was opted for as the camera
+motion although a cubic Bézier curve would produce the same outcome it made
 debugging slightly easier.
 ** Reproducibility
 This project was created used
@@ -829,7 +831,7 @@ script to function.
 
 * Results
 Animations referenced in this section are available on the [[https://github.com/Jake-Moss/blender-chess/tree/master/Videos][public GitHub repo.]]
-They will be refereed to by their filenames[fn:8] and hyperlinked to. The still
+They will be refered to by their filenames[fn:8] and hyperlinked. The still
 renders below may not appear within the animations as they may not be suitable
 to comparison, instead still renders from the same scenes are included to
 showcase these effects. The animations themselves and the appearance of these
@@ -840,6 +842,8 @@ effects will be shown within the presentation.
 - [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble_cycles_higher.mp4][~Marble_cycles.mp4~]]\\
   This is the path traced render of the final scene for comparison purposes. The
   scene and setup is identical other than the engine.
+- [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/Marble_stacked_higher.mp4][Marble_stacked_higher.mp4]]\\
+  A side by side comparison between ~Eevee~ and ~Cycles~
 - [[https://github.com/Jake-Moss/blender-chess/blob/master/Videos/disco_luxcore.mp4][~disco_luxcore.mp4~]]\\
   Disco chess was set to render long before this project was near completion.
   Although it is missing many key aspects and features its purpose is to
@@ -890,16 +894,16 @@ effects will be shown within the presentation.
 \newpage
 It is clear from the close up figures that ~Cycles~ produces significantly more
 believable lighting due to its ability to accurately computer indirect lighting.
-~Eevee~ tries its best with its approximations of shadows however it fails
+~Eevee~ tries its best with its approximations of shadows however it fails to
 correctly illuminate the arch formed by two other pieces of confetti.\\
 
-Between the two intersection pieces on the right most image, ~Cycles~ correctly
+Between the two intersection pieces on the right image, ~Cycles~ correctly
 provides the indirect and ambient occlusion that should be present within such a
 formation. ~Eevee~ illuminates the whole purple face as if the pink piece was
 not present at all. The shadows cast by the pieces are also not present at
 all.\\
 
-~Eevee~ also struggles to deal with the twist in the teal piece (left most
+~Eevee~ also struggles to deal with the twist in the teal piece (left
 image), ~Cycles~ correctly produces the indirect lighting and shadowing.
 #+name: reflections-eevee
 #+caption: Comparison Eevee
@@ -941,7 +945,7 @@ sharper outline around the pawn. ~Eevee~ does not show this as the reflectance
 is an approximation using the depth buffer and the previous frame colour.\\
 
 On the space tile ~Cycles~ is able to correctly compute the reflection of the
-piece in a sharp manner as expected by a material with a mirror like finish.
+piece in a sharp manner by a material with a mirror like finish.
 ~Eevee~'s approximations once again cause the reflections to be blurred.\\
 
 Within the same figure the normal map of the marble texture causes the light to
@@ -949,7 +953,7 @@ waver reflect in a non-uniform manner.\\
 
 In Figure [[ref:shading-close]] ~Eevee~ adds shadows without considering indirect
 lighting. ~Cycles~ produces a more realistic result. The intersection of all the
-shadows should not be the sum of its elements are the indirect lighting will
+shadows should not be the sum of its elements as the indirect lighting will
 illuminate it partially.
 
 #+caption: Cycles attempting disco chess
@@ -963,7 +967,7 @@ illuminate it partially.
 [[file:Images/mpv-shot0001.jpg]]
 
 Some of ~Cycles~ backwards rays do make it to the light source, unfortunately
-this is not enough accurate for the denoiser not to be fooled, it tires its best
+this is not accurate enough for the denoiser not to be fooled, it tries its best
 to clean up this noise and creates a faint pink glow on the board an pieces.\\
 
 Due to ~Luxcore~'s bidirectional path tracing it does not suffer from this and
@@ -977,53 +981,57 @@ using ~ffmpeg~.
 ffmpeg -framerate 24 -s 1920x1080 -i %04d.png -vcodec libx264 -crf 25 -pix_fmt yuv420p ../Videos/$FILENAME.mp4
 #+end_src
 * Self-evaluation
+** Avoiding basic errors
+I believe I have achieved all basic marking criteria and are deserving of all
+basic marks. (7 Marks)
 ** Further additional marks
- 1. ~Report is well-written and concise~\\
-    I believe this report is well-written and concise where possible while still covering many
-    important topics. (1 Mark)
- 2. ~Report text and image examples support each other well~\\
-    Images and diagrams were used in conjunction with text to better portray my
-    ideas and understanding. Screenshots of texture configurations and the
-    accompanying reasons are an example of this. (1 Mark)
- 3. ~An ample number of illustrative images are used to clearly demonstrate the
-    techniques~\\
-    I have consistently used images to illustrate concepts and techniques used
-    along with the results of texture generation, modelling, and rendering. (1 Mark)
- 4. ~It is evident from the report whether or not the techniques implemented
-    were appropriate for achieving the task~\\
-    I believe I used appropriate techniques to create a visually appealing
-    model. For example, ~MIS, Screen Space Reflections, Adaptive Sample,
-    and Caustics~ are relevant to the project and work to create a visually
-    appealing animation. (1 Mark)
- 5. ~Techniques chosen were carefully considered and compared with alternatives
-    demonstrating insight into the design decision process~\\
-    I chose techniques thought best demonstrate adequate knowledge while
-    working towards a visually appealing  result. Many features and algorithms
-    were consider which are more physically correct or such but were not in cost
-    worthy or feasible. (1 Mark)
- 6. ~Report demonstrates significant work testing and applying techniques~\\
-    Through this report I have shown significant testing throughout the
-    application and comparison of techniques including differences between
-    rendering engines and their effect on caustics. (1 Mark)
- 7. ~The report demonstrates that independent research extending beyond the specific course taught techniques have contributed to the final project in a meaningful way~\\
-    I have delved into the source of Blender to find methods and algorithms used
-    where I found documentation to be lacking. I found, read, and cited original
-    papers detailing ~GGX, MSGGX, Christensen-Burley model, and Random walk
-    model~. (2 Marks)
- 8. ~Large variety of techniques applied~\\
-    I have used;
-    - Procedural texture and normal map generation using noise functions
-    - Particle systems and explosion
-    - Direct and indirect lighting
-    - Reflections, bloom, specular reflection and other lighting effects
-    - Advanced lighting techniques (caustics)
-    - A variety of rendering algorithms including rasterization, path tracing,
-      and bidirectional path tracing
-    (2 Marks)
- 9. ~Final product looks visually appealing and complete~\\
-    Throughout this project I always aimed to create something visually appealing.
-    I believe I have excelled at this and made something I would display
-    publicly with pride. (2 Marks)
+In addition to the basic marks I believe I have earned the following marks.
+1. ~Report is well-written and concise~\\
+   I believe this report is well-written and concise where possible while still covering many
+   important topics. (1 Mark)
+2. ~Report text and image examples support each other well~\\
+   Images and diagrams were used in conjunction with text to better portray my
+   ideas and understanding. Screenshots of texture configurations and the
+   accompanying reasons are an example of this. (1 Mark)
+3. ~An ample number of illustrative images are used to clearly demonstrate the
+   techniques~\\
+   I have consistently used images to illustrate concepts and techniques used
+   along with the results of texture generation, modelling, and rendering. (1 Mark)
+4. ~It is evident from the report whether or not the techniques implemented
+   were appropriate for achieving the task~\\
+   I believe I used appropriate techniques to create a visually appealing
+   model. For example, ~MIS, Screen Space Reflections, Adaptive Sample,
+   and Caustics~ are relevant to the project and work to create a visually
+   appealing animation. (1 Mark)
+5. ~Techniques chosen were carefully considered and compared with alternatives
+   demonstrating insight into the design decision process~\\
+   I chose techniques thought to best demonstrate adequate knowledge while
+   working towards a visually appealing  result. Many features and algorithms
+   were consider which are more physically correct or such but were not considered cost
+   worthy or feasible. (1 Mark)
+6. ~Report demonstrates significant work testing and applying techniques~\\
+   Throughout this report I have shown significant testing through the
+   application and comparison of techniques including differences between
+   rendering engines and their effect on caustics. (1 Mark)
+7. ~The report demonstrates that independent research extending beyond the specific course taught techniques have contributed to the final project in a meaningful way~\\
+   I have delved into the source of Blender to find methods and algorithms used
+   where I found documentation to be lacking. I found, read, and cited original
+   papers detailing ~GGX, MSGGX, Christensen-Burley model, and Random walk
+   model~. (2 Marks)
+8. ~Large variety of techniques applied~\\
+   I have used;
+   - Procedural texture and normal map generation using noise functions
+   - Particle systems and explosion
+   - Direct and indirect lighting
+   - Reflections, bloom, specular reflection and other lighting effects
+   - Advanced lighting techniques (caustics)
+   - A variety of rendering algorithms including rasterization, path tracing,
+     and bidirectional path tracing
+   (2 Marks)
+9. ~Final product looks visually appealing and complete~\\
+   Throughout this project I always aimed to create something visually appealing.
+   I believe I have excelled at this and made something I would display
+   publicly with pride. (2 Marks)
 
 \newpage
 * Appendix
@@ -1102,7 +1110,7 @@ class CustomPiece():
 
 [fn:7]There is nothing inherently difficult about caustics, any path tracer can
 render them. Instead it is a matter of convergence speed.
-[fn:6]A very interesting effect and be achieve by using the ~Camera~ as the
+[fn:6]A very interesting effect can be achieve by using the ~Camera~ as the
 source of the coordinates. The marble texture flows like sea foam as the camera spins.
 
 [fn:5]A buffer object is an array of unformatted memory allocated by the GPU.

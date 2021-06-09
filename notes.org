@@ -1,37 +1,79 @@
 #+TITLE: Notes
-#+attr_org: width 200
 
-* Modelling
-** Pieces
-[[https://pixabay.com/illustrations/chess-chess-pieces-chess-piece-316887/][Chess piece reference image]]
-Licence allows for free usage [[https://pixabay.com/illustrations/chess-chess-pieces-chess-piece-316887/][here]]
+* Source code
+All source code and resources used within this report are available at this
+repository, it will be made public after the submission deadline.
+* Goals and project aims
+In this projects proposal, I stated the goal was the create an 3D interactive
+chess board. And to do this I would use openGL and python. However, I quickly
+realised that I didn't not have the experience required to create an advanced and
+visually appealing model. Instead I
+pivoted to creating a means to animation any chess game using python and
+Blender. While I also had no experience with Blender I was confident I could
+create an appealing project.
+* Games
+For the choice of games, I picked the "Vladimir Kramnik vs Garry Kasparov 2001"
+blitz match.
 
-#+attr_org: :width 400
-[[file:Images/A taste of what is to come.png]]
+As for the disco chess render, the game played there is the famous game between
+"Magnus Carlsen" and "Hikaru Nakamura" during the 2021 invitationals featuring a
+draw by bong cloud repetition. The appeal of this game was its extremely short
+nature due to the long convergence time of bidirectional path tracers, this was ideal.
+* Python
+To animated games I created an interface between Blenders API and the
+~python-chess~ library. To bridge the two I wrote a custom piece class which the
+library would be able to update, and would puppet the blender models.
+
+One limitation within implementation is castling. I chose to hard code the
+possible castle cases rather than code for the general case. This is the only
+snippet limiting this script classical chess.
+* Luxcore
+Luxcore, while having great bidirectional path tracing, is not without its own
+limitations.
+
+Here I have a render a still through ~Eevee~.
+
+And here is the exact same scene rendered by ~Luxcore~.
+
+Luxcore is incompatible with the majority of the textures used within this scene.
+
+The confetti is colourless, and the marble texture is non-existent.
+
+Luxcore also fails to correctly render the checker board texture. However this is
+fixable by halving the scale, and flipping the colours.
 
 
-* Lighting
-** Cannot get disco ball to bound enough light
-Not sure what im doing wrong
+This fix was present in the disco chess render.
+* Disco chess
+Here is the disco chess render,
+- This render was set to halt after 10 mins. Even with all this time to render
+  the image is still grainy. This could be fixed extending the halt timer,
+  however, at 10mins per frame this video alone took 32 hours to render. And it
+  killed my desktop PC.
+- Camera was stopped to show the disco ball spinning.
+- Red and blue lights used to chosen to show their ability to blend create
+  purple.
+* Cycles and eevee
+On the left we have eevee with 512 samples, ambient occlusion, bloom, and screen
+space reflections. On the right we have Cycles, this video was kindly render by
+Jack Neiper with 1024 samples and adaptive sampling, refractive and reflection
+caustics, and a OptiX denoiser.
+
+Due to a mis-configuration of ambient occlusion within cycles settings. The
+image appears to be uniformly lit and blown out. This is most noticeable on the
+last frame as the confetti should not be visible while outside of the lighting cones.
+- specular differences
+- sharp and blurry shadows
+- Confetti :(
 
 
-[[https://blender.stackexchange.com/questions/157418/why-dont-i-see-light-reflected-off-a-mirror-in-cycles][I think this is why]]
 
+- In the early days, to deal with piece capture animations I sent the pieces
+  flying 30m into the sky. I tried to then replace that with this smoke
+  animation but due to the additional baking and rendering time I removed both
+  in favour of confetti, and moving pieces up and off to the side.
+* Thank you
+I encourage you to view this animations yourself as blackboard may apply
+compression. All videos are in MP4 containers to ensure compatibility.
 
-* Game used in source
-[[https://www.chessgames.com/perl/chessgame?gid=1210753]]
-
-
-* Check list
-- [ ] Direct lighting
-- [ ] Indirect lighting
-  - Works in cyles and luxcore, not in eevee
-  - Disco ball
-  - Could use light probes for eevee
-- [ ] Path tracing settings
-- [ ] Bi-directional path tracing
-  - Only in luxcore, very slow, cpu only
-- [ ] Noise reduction
-- [ ] Modelling
-    - Done using reference image and screw modifier
-- [ ]
+Thank you for your time.
